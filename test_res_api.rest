@@ -1,0 +1,51 @@
+
+POST http://localhost:5002/add-user/
+
+Content-Type: application/json
+{
+    "fullname":"MAWUNYO AHETO",
+    "email":"raymondaheto@gmail.com",
+    "password":"test123",
+    "usercategory_id":"89e89411-b9af-4298-b860-9b68bfce746c",
+    "cellphone":"0244893968",
+    "branchid":"89e89411-b9af-4298-b860-9b68bfce746c",
+    "create_userid":"89e89411-b9af-4298-b860-9b68bfce746c"
+}
+
+###
+GET http://localhost:5002/usercategory
+
+###
+GET http://localhost:5002/usertypes
+
+
+###
+PUT http://localhost:5002/usercategory/89e89411-b9af-4298-b860-9b68bfce746c
+
+Content-Type: application/json
+{
+"description":"Biomedical Scientist"
+}
+
+####
+POST http://localhost:5002/usercategory/
+
+Content-Type: application/json
+
+{
+    "description":"Manager"
+}
+
+###
+
+GET http://localhost:5002/users
+
+###
+POST http://localhost:5002/login
+
+Content-Type: application/json
+
+{
+    "email":"raymondm@gmail.com",
+    "password":"test123"
+}

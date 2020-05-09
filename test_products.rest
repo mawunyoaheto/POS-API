@@ -1,0 +1,47 @@
+
+### GET PRODUCT CATEGORIES
+GET http://localhost:5002/product-category/
+
+###ADD PRODUCT CATEGORY
+
+POST http://localhost:5002/product-category/
+Content-Type: application/json
+[
+    {
+        "category":"Vegs", "description":"test3","qty":"4"
+    },
+    {
+        "category":"Vegs", "description":"test4","qty":"5"
+    }
+]
+
+
+### ADD PRODUCTS
+
+POST http://localhost:5002/products/
+Content-Type: application/json
+
+{
+	 "description":"Coke",
+      "ext_description":"Coca-Cola",
+      "product_code":"B00001",
+      "cost_price":"0.80",
+      "s_price":"1.20",
+      "category_id":"89087345-4006-4846-bae6-c3c9a76eaf54",
+      "create_user_id":"265d16da-b154-40a0-9e59-9dea6a628f4e"
+}
+
+### UPDATE PRODUCT
+
+PUT http://localhost:5002/products/
+Content-Type: application/json
+{
+	 "description":"Coke",
+      "ext_description":"Coca Cola",
+      "product_code":"B00001",
+      "cost_price":"0.80",
+      "s_price":"1.20",
+      "category_id":"89087345-4006-4846-bae6-c3c9a76eaf54",
+      "modifier_userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+      "archived":"False"
+}

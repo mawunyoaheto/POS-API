@@ -1,0 +1,112 @@
+
+### GET OUTLETS
+GET http://localhost:5002/outlet/
+
+### GET OUTLET BY ID
+
+GET http://localhost:5002/outlet/265d16da-b154-40a0-9e59-9dea6a628f4e
+
+### ADD OUTLET
+
+POST http://localhost:5002/outlet/
+Content-Type: application/json
+
+{
+	"name":"ST DOMINIC MART",
+    "taxID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "countryID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "regionID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "cityID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "email":"sdhmart@gmail.com",
+    "contactNumber":"233244893968",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"true"
+}
+
+
+### UPDATE OUTLET
+
+PUT http://localhost:5002/outlet/265d16da-b154-40a0-9e59-9dea6a628f4e
+Content-Type: application/json
+
+{
+	"name":"ST DOMINIC MART",
+    "taxID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "countryID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "regionID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "cityID":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "email":"sdhmart@gmail.com",
+    "contactNumber":"233244893968",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"true"
+}
+
+
+### GET TAX
+GET http://localhost:5002/tax/
+
+### GET TAX BY ID
+
+GET http://localhost:5002/tax/bf14eb1c-180f-478d-ba30-839e8fd4767
+
+### ADD TAX
+
+POST http://localhost:5002/tax/
+Content-Type: application/json
+
+{
+	"description":"VAT",
+    "percentage":"3.00",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"true"
+}
+
+
+### UPDATE TAX
+
+PUT http://localhost:5002/tax/bf14eb1c-180f-478d-ba30-839e8fd47673
+Content-Type: application/json
+
+{
+	"description":"VAT",
+    "percentage":"3.00",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"false"
+}
+
+
+### GET SUPPLIER
+GET http://localhost:5002/supplier/
+
+### GET SUPPLIER BY ID
+
+GET http://localhost:5002/supplier/a05c484e-d774-4688-883d-1e144fe3624c
+
+### ADD SUPPLIER
+
+POST http://localhost:5002/supplier/
+Content-Type: application/json
+
+{
+	"name":"DANADAMS",
+	"address":"P.O. BOX 55 KUMASI",
+	"phonenumber":"233501699394",
+    "email":"sales@danadams.com",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"true"
+}
+
+
+### UPDATE SUPPLIER
+
+PUT http://localhost:5002/supplier/a05c484e-d774-4688-883d-1e144fe3624c
+Content-Type: application/json
+
+{
+	"name":"KINAPHARMA",
+	"address":"P.O. BOX 55 KUMASI",
+	"phonenumber":"233501699395",
+    "email":"sales@danadams.com",
+    "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
+    "isactive":"false"
+}
