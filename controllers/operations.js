@@ -754,6 +754,8 @@ async function updateSupplier(req, res) {
         req.body.userid,
         req.body.isactive
     ];
+
+    console.log(values)
     const findonequery = 'SELECT * FROM public.suppliers WHERE id = ($1)';
     const updateonequery = `UPDATE public.suppliers SET name='${req.body.name}', address='${req.body.address}', 
     phone_number='${req.body.phonenumber}', email='${req.body.email}', isactive='${req.body.isactive}', 
@@ -761,28 +763,28 @@ async function updateSupplier(req, res) {
   
     const confirmed = await helper.confirmRecord(findonequery, id);
     if (confirmed) {
-  
+
       try {
         //update is done here
+        //console.log(req.body.description)
         await pool.query(updateonequery, (err, res, next) =>{
   
-          console.log(res.rows)
+          //console.log(res.rows)
          
         });
         
-        res.status(201).json({ 'message': 'updated succesfully' });
-      } catch (err) {
-        console.log('UPDATE-ERROR',err)
-        res.status(404).json({ 'error': err });
+  res.status(201).json({ 'message': 'updated succesfully' });
+      } catch (error) {
+        console.log('UPDATE-ERROR',error)
+        res.status(404).json({ 'error': error });
       }
   
       //res.status(200).json({ 'message': 'record found' })
   
     } else {
   
-      res.status(404).json({ 'message': 'Update failed: record does not exist' });
+      res.status(404).json({ 'message': 'Update failed: record not found' });
     }
-  
   };
 
 
@@ -826,6 +828,219 @@ async function getEpaymentPayloadTypes(req, res) {
 
 }
 
+/**
+ * @swagger
+ * /e-Payment:
+ *  post:
+ *    summary: Add E-Payment Gateway setup
+ *    tags: [E-Payment]
+ *    description: Used to E-Payment Gateway setup
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+
+async function createEpaymentAPI(req, res) {
+
+  const pool = await db.dbConnection()
+
+  const createQuery = `INSERT INTO public.epaymentapisetup(description, reaquesturl, statusurl, payloadtypeid, apikey, secretkey, 
+    userid, code, requestbody, statusbody, active, usermachinename, usermachineip, createuserid)VALUES ($1, $2, $3, $4, $5, $6, $7, 
+    $8, $9, $10, $11, $12, $13, $14) returning *`;
+
+  const values = [
+    req.body.description,
+    req.body.requesturl,
+    req.body.statusurl,
+    req.body.payloadtypeid,
+    req.body.apikey,
+    req.body.secretkey,
+    req.body.userid,
+    req.body.code,
+    req.body.requestbody,
+    req.body.statusbody,
+    req.body.isactive,
+    userMachineName,
+    userMachineIP,
+    req.body.userid,
+    
+  ];
+
+    try {
+    const { rows } = await pool.query(createQuery, values);
+
+    return res.status(201).send({ 'message': 'created succesfully' });
+
+  } catch (error) {
+
+    res.status(400).send(error);
+  }
+}
+
+/**
+ * @swagger
+ * /payment-mode:
+ *  get:
+ *    summary: Get all taxs
+ *    tags: [Payments]
+ *    description: Used to get all taxs
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+  
+async function getEpaymentAPI(req, res) {
+  
+  const pool = await db.dbConnection()
+
+  try {
+
+    pool.query('select * from public.epaymentapisetup', function (err, recordset) {
+
+      if (err) {
+
+        console.log(err)
+
+      } else {
+
+        // send records as a response
+        res.status(200).json(recordset.rows);
+      }
+    });
+
+
+  } catch (error) {
+
+    console.log(error)
+
+  }
+
+}
+
+
+/**
+ * @swagger
+ * path:
+ *  /e-paymentapi/id:
+ *    get:
+ *      summary: Get e-payment setup by id
+ *      tags: [E-Payments]
+ *      parameters:
+ *          name: catID
+ *          -in: path
+ *          description: id of e-payment to fetch
+ *          schema:
+ *            type: string
+ *          required: true
+ *      responses:
+ *        '200':
+ *          description: A succesful response
+ *          content:
+ *            application/json:
+ */
+
+async function getEpaymentAPIByID(id, res) {
+
+  const pool = await db.dbConnection()
+
+  try {
+
+    const recordset = await pool.query(`select * FROM public.epaymentapisetup WHERE id='${id}'`)
+
+    if (recordset.rowsAffected > 0) {
+      return res.status(200).json( recordset.recordset[0].category)
+      //console.log('userCategory-id', recordset.recordset[0].id)
+    } else {
+      return {
+        message: 'No record found'
+      }
+
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.end()
+
+  }
+
+}
+
+/**
+ * @swagger
+ * /E-payment:
+ *  put:
+ *    summary: update e-payment setup by ID
+ *    tags: [E-Payments]
+ *    description: Used to update e-payment setup
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+
+async function updateEpaymentAPI(req, res) {
+
+  const id = req.params.id;
+  const pool = await db.dbConnection();
+
+  const values = [
+    req.body.description,
+    req.body.requesturl,
+    req.body.statusurl,
+    req.body.payloadtypeid,
+    req.body.apikey,
+    req.body.secretkey,
+    req.body.apiuserid,
+    req.body.code,
+    req.body.requestbody,
+    req.body.statusbody,
+    req.body.isactive,
+    usermachinename ='DESKTOP',
+    usermachineip='127.0.0.1',
+    req.body.createuserid
+  ];
+  console.log(values)
+  const findonequery = 'SELECT * FROM public.epaymentapisetup WHERE id = ($1)';
+//console.log(values)
+  const updateonequery = `UPDATE public.epaymentapisetup SET description ='${req.body.description}', requesturl='${req.body.requesturl}',
+   statusurl='${req.body.statusurl}', payloadtypeid='${req.body.payloadtypeid}', apikey='${req.body.apikey}', secretkey='${req.body.secretkey}', 
+   userid='${req.body.apiuserid}', code='${req.body.code}', requestbody='${req.body.requestbody}', statusbody='${req.body.statusbody}', 
+   active='${req.body.isactive}', usermachinename='${usermachinename}', usermachineip='${usermachineip}', updatetime='${moment(new Date())}', 
+   updateuserid='${req.body.createuserid}' WHERE id = '${id}' returning *`;
+
+  const confirmed = await helper.confirmRecord(findonequery, id);
+
+  if (confirmed) {
+
+     try {
+      //update is done here
+     await pool.query(updateonequery, (err, resp, next) =>{
+       
+      if (err) {
+        helper.parseError(err, updateonequery)
+
+        // Pool result will be undefined
+        console.log("SQL result:", res);
+
+      } else {
+       res.status(201).json({ 'message': 'updated succesfully' });
+ 
+      }
+      });
+      
+
+     } catch (error) {
+      console.log('UPDATE-ERROR',error)
+      throw error
+     }
+
+
+  } else {
+
+  res.status(404).json({ 'message': 'Update failed: record does not exist' });
+
+   }
+
+};
 
 module.exports={
     getPaymentModes,
@@ -844,6 +1059,10 @@ module.exports={
     getSupplierID,
     createSupplier,
     updateSupplier,
-    getEpaymentPayloadTypes
+    getEpaymentPayloadTypes,
+    createEpaymentAPI,
+    getEpaymentAPI,
+    getEpaymentAPIByID,
+    updateEpaymentAPI
 
 }

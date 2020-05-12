@@ -3,6 +3,7 @@ var moment = require('moment');
 var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
+var os = require('os');
 
 
 
@@ -21,6 +22,7 @@ const helper = require('../util/helper');
 async function getOrderStatus(req, res) {
   
     const pool = await db.dbConnection()
+    const hostname = await helper.getHosnameIP(req)
   
     try {
   
@@ -31,9 +33,10 @@ async function getOrderStatus(req, res) {
           console.log(err)
   
         } else {
-  
+          console.log('hostname',hostname)
           // send records as a response
           res.status(200).json(recordset.rows);
+          
         }
       });
   

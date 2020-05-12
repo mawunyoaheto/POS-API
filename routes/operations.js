@@ -34,4 +34,11 @@ router.post('/supplier',operationsController.createSupplier);
 router.put('/supplier/:id',operationsController.updateSupplier);
 
 
+//e-payment api setup
+router.get('/e-payment',operationsController.getEpaymentAPI);
+router.get('/e-payment/:id',operationsController.getEpaymentAPI);
+router.post('/e-payment',operationsController.createEpaymentAPI);
+router.put('/e-payment/:id',operationsController.updateEpaymentAPI);
+
+
 module.exports=router;

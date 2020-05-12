@@ -44,6 +44,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {explorer: true}));
 
+//app.set('trust proxy');
 app.use(helmet());
 app.use(limiter)
 app.use(function(req, res, next) {
@@ -111,11 +112,15 @@ app.use('/supplier',operations_routes);
 app.use('/supplier/:id',operations_routes);
 
 
-
 //ORDERS
+
 //Supplier
 app.use('/orderstatus',orders_routes);
 app.use('/orderstatus/:id',orders_routes);
+
+//E-Payment API setup
+app.use('/e-payment',operations_routes);
+app.use('/e-payment/:id',operations_routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

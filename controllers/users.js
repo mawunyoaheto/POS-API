@@ -319,6 +319,7 @@ async function updateUserCategory(req, res) {
 
     try {
       //update is done here
+      console.log(req.body.description)
       await pool.query(updateonequery, (err, res, next) =>{
 
         console.log(res.rows)
