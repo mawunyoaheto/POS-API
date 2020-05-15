@@ -29,14 +29,14 @@ router.put('/tax/:id',operationsController.updateTax);
 
 //Supplier routes
 router.get('/supplier',operationsController.getSuppliers);
-router.get('/supplier/:id',operationsController.getSupplierID);
+router.get('/supplier/:id',operationsController.getSupplierByID);
 router.post('/supplier',operationsController.createSupplier);
 router.put('/supplier/:id',operationsController.updateSupplier);
 
 
 //e-payment api setup
 router.get('/e-payment',operationsController.getEpaymentAPI);
-router.get('/e-payment/:id',operationsController.getEpaymentAPI);
+router.get('/e-payment/:id',operationsController.getEPaymentAPIID);
 router.post('/e-payment',operationsController.createEpaymentAPI);
 router.put('/e-payment/:id',operationsController.updateEpaymentAPI);
 

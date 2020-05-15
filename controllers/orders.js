@@ -76,7 +76,7 @@ async function getOrderStatusByID(req, res) {
   
     try {
   
-      const recordset = await pool.query(`select * FROM orderstatus WHERE id='${id}'`)
+      const recordset = await pool.query(`select * FROM orderstatus WHERE id='${req.query.id}'`)
   
       if (recordset.rowsAffected > 0) {
         return res.status(200).json( recordset.recordset)
