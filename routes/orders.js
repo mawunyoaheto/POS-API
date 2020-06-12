@@ -15,5 +15,9 @@ router.get('/orderstatus/:id',ordersController.getOrderStatusByID);
 // router.post('/payment-mode',operationsController.createPaymentMode);
 // router.put('/payment-mode/:id',operationsController.updatePaymentMode);
 
+//orders routes
+router.post('/orders',ordersController.createOrder);
+router.post('/orderreceival',ordersController.createOrderReceival);
+
 
 module.exports=router;

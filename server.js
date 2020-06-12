@@ -113,6 +113,8 @@ app.use('/supplier/:id',operations_routes);
 
 
 //ORDERS
+app.use('/orders',orders_routes);
+app.use('/orderreceival',orders_routes);
 
 //Supplier
 app.use('/orderstatus',orders_routes);
@@ -122,8 +124,12 @@ app.use('/orderstatus/:id',orders_routes);
 app.use('/e-payment',operations_routes);
 app.use('/e-payment/:id',operations_routes);
 
+//ItemBaseUnits
+app.use('/itembaseunit',operations_routes);
+app.use('/itembaseunit/:id',operations_routes);
+
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use((err, req, res, next) => {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);

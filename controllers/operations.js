@@ -3,9 +3,12 @@ var moment = require('moment');
 var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
+var dbConfig = require('../config');
 
 
-
+const userid = `${dbConfig.app_user}`;
+const userMachineName = `${dbConfig.userMachine}`;
+const userMachineIP = `${dbConfig.userIP}`;
 /**
  * @swagger
  * tags:
@@ -989,15 +992,6 @@ async function createEpaymentAPI(req, res) {
 
   }
 
-  //   try {
-  //     const { rows } = await pool.query(createQuery, values);
-
-  //     return res.status(201).send({ 'message': 'created succesfully' });
-
-  //   } catch (error) {
-
-  //     res.status(400).send(error);
-  //   }
 }
 
 /**
@@ -1096,37 +1090,38 @@ async function getEpaymentAPIByID(req, res) {
 
 }
 
-async function getEPaymentAPIID(req, res) {
-  const id = req.params.id;
-  const pool = await db.dbConnection()
-  const queryString = `select * FROM public.epaymentapisetup WHERE id=${id}`
+// async function getEPaymentAPIID(req, res) {
+//   const id = req.params.id;
+//   const pool = await db.dbConnection()
+//   const queryString = `select * FROM public.epaymentapisetup WHERE id=${id}`
 
-  try {
+//   try {
 
-    pool.query(queryString, function (err, recordset) {
+//     pool.query(queryString, function (err, recordset) {
 
-      if (err) {
+//       if (err) {
 
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+//         return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
 
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json('record not found')
-        }
+//       } else {
+//         if (recordset.rows.length > 0) {
+//           // send records as a response
+//           return res.status(200).json(recordset.rows)
+//         } else {
+//           return res.status(402).json('record not found')
+//         }
 
-      }
-    });
+//       }
+//     });
 
-  } catch (error) {
-    console.log(error);
-    res.end()
+//   } catch (error) {
+//     console.log(error);
+//     res.end()
 
-  }
+//   }
 
-}
+// }
+
 /**
  * @swagger
  * /E-payment:
@@ -1204,6 +1199,188 @@ async function updateEpaymentAPI(req, res) {
 
 };
 
+
+/**
+ * @swagger
+ * /itembaseunits:
+ *  get:
+ *    summary: Get all Item Base Uits
+ *    tags: [ItemBaseUnit]
+ *    description: Used to get all Item Base Units
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+
+async function getItemBaseUnits(req, res) {
+  const queryString = 'select * from public.itembaseunits'
+  const pool = await db.dbConnection()
+  try {
+
+    pool.query(queryString, function (err, recordset) {
+
+      if (err) {
+
+        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+
+      } else {
+        if (recordset.rows.length > 0) {
+          // send records as a response
+          return res.status(200).json(recordset.rows)
+        } else {
+          return res.status(402).json('record not found')
+        }
+
+      }
+    });
+
+  } catch (error) {
+    return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+  }
+
+}
+
+
+/**
+ * @swagger
+ * path:
+ *  /itembaseunit/id:
+ *    get:
+ *      summary: Get itembaseunit setup by id
+ *      tags: [ItemBaseUnit]
+ *      parameters:
+ *          name: id
+ *          -in: path
+ *          description: id of itembaseunit to fetch
+ *          schema:
+ *            type: string
+ *          required: true
+ *      responses:
+ *        '200':
+ *          description: A succesful response
+ *          content:
+ *            application/json:
+ */
+
+async function getItemBaseUnitByID(req, res) {
+  const id = req.params.id;
+  const pool = await db.dbConnection()
+
+  const queryString = `select * FROM public.itembaseunits WHERE id=${id}`
+
+  try {
+
+    pool.query(queryString, function (err, recordset) {
+
+        if (recordset.rows.length > 0) {
+          // send records as a response
+          return res.status(200).json(recordset.rows)
+        } else {
+          return res.status(402).json('record not found')
+        }
+      
+    });
+
+  } catch (error) {
+    return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+
+  }
+
+}
+
+
+
+/**
+ * @swagger
+ * /itembaseunit:
+ *  post:
+ *    summary: Add new Item Base Unit
+ *    tags: [ItemBaseUnit]
+ *    description: Used to create Item Base Unit
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+
+async function createItemBaseUnit(req, res) {
+
+  const pool = await db.dbConnection()
+
+  const createQuery = `INSERT INTO public.itembaseunits(baseunit, isactive, create_user, usermachinename, usermachineip) 
+  VALUES ($1, $2, $3, $4, $5) returning *`;
+  
+
+  try {
+
+    await pool.query('BEGIN')
+
+    for (var i = 0; i < req.body.length; i++) {
+
+      const values = [
+        req.body[i].baseunit,
+        req.body[i].isactive,
+        userid,
+        userMachineName,
+        userMachineIP
+      ];
+
+     await pool.query(createQuery,values ) 
+  
+    }
+    await pool.query('COMMIT')
+    return res.status(201).json({ 'message': 'success' })
+  
+
+  } catch (error) {
+
+    pool.query('ROLLBACK')
+    return res.status(402).json('record insert failed with error: ' + helper.parseError(error, createQuery))
+
+  }
+}
+
+/**
+ * @swagger
+ * /itembaseunit:
+ *  put:
+ *    summary: update itembaseunit setup by ID
+ *    tags: [E-Payments]
+ *    description: Used to update e-payment setup
+ *    responses:
+ *      '200':
+ *        description: A succesful response
+ */
+
+async function updateItemBaseUnit(req, res,err) {
+
+  const id = req.params.id;
+  const pool = await db.dbConnection();
+
+  const values = [
+    req.body.baseunit,
+    req.body.isactive,
+    userid,
+    userMachineName,
+    userMachineIP
+  ];
+
+  //const findonequery = 'SELECT * FROM public.epaymentapis WHERE id = ($1)';
+
+  const updateonequery = `UPDATE public.itembaseunits SET baseunit='${req.body.baseunit}', isactive='${req.body.isactive}', modified_date='${moment(new Date())}', 
+  modifier_userid='${userid}', usermachinename='${userMachineName}', usermachineip='${userMachineIP}' WHERE id = '${id}' returning *`
+
+    try {
+    
+      await pool.query(updateonequery)
+      return res.status(201).json({ 'message': 'success' })
+
+    } catch (err) {
+      return res.status(402).json('record insert failed with error: ' + helper.parseError(err, updateonequery))
+    }
+
+}
+
+
 module.exports = {
   getPaymentModes,
   getPaymentModeByID,
@@ -1226,6 +1403,9 @@ module.exports = {
   getEpaymentAPI,
   getEpaymentAPIByID,
   updateEpaymentAPI,
-  getEPaymentAPIID
+  getItemBaseUnits,
+  getItemBaseUnitByID,
+  createItemBaseUnit,
+  updateItemBaseUnit
 
 }

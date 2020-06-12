@@ -4,11 +4,11 @@ var winston = require('../util/winston');
 
 // your credentials
 
-console.log('Host',dbConfig.db_host)
-console.log('Port',dbConfig.db_port)
-console.log('User',dbConfig.user)
-console.log('Password',dbConfig.password)
-console.log('Database',dbConfig.database)
+// console.log('Host',dbConfig.db_host)
+// console.log('Port',dbConfig.db_port)
+// console.log('User',dbConfig.user)
+// console.log('Password',dbConfig.password)
+// console.log('Database',dbConfig.database)
 
 const pool = new Pool({
   //connectionString: DATABASE_URL

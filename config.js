@@ -18,7 +18,10 @@ const {
     DB_HOST,
     DB_NAME,
     DB_USER,
-    DB_PASSWORD
+    DB_PASSWORD,
+    USER_MACHINE_IP,
+    USER_MACHINE_NAME,
+    APP_USERID
 } = process.env;
 
 module.exports = {
@@ -29,7 +32,10 @@ module.exports = {
     user: DB_USER,
     password: DB_PASSWORD,
     db_host: DB_HOST,
-    db_port: DB_PORT
+    db_port: DB_PORT,
+    userMachine: USER_MACHINE_NAME,
+    userIP: USER_MACHINE_IP,
+    app_user: APP_USERID
       
 
 };

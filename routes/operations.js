@@ -36,9 +36,15 @@ router.put('/supplier/:id',operationsController.updateSupplier);
 
 //e-payment api setup
 router.get('/e-payment',operationsController.getEpaymentAPI);
-router.get('/e-payment/:id',operationsController.getEPaymentAPIID);
+router.get('/e-payment/:id',operationsController.getEpaymentAPIByID);
 router.post('/e-payment',operationsController.createEpaymentAPI);
 router.put('/e-payment/:id',operationsController.updateEpaymentAPI);
+
+//Item Base Unit  routes
+router.get('/itembaseunit',operationsController.getItemBaseUnits);
+router.get('/itembaseunit/:id',operationsController.getItemBaseUnitByID);
+router.post('/itembaseunit',operationsController.createItemBaseUnit);
+router.put('/itembaseunit/:id',operationsController.updateItemBaseUnit);
 
 
 module.exports=router;
