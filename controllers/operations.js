@@ -1200,17 +1200,7 @@ async function updateEpaymentAPI(req, res) {
 };
 
 
-/**
- * @swagger
- * /itembaseunits:
- *  get:
- *    summary: Get all Item Base Uits
- *    tags: [ItemBaseUnit]
- *    description: Used to get all Item Base Units
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+
 
 async function getItemBaseUnits(req, res) {
   const queryString = 'select * from public.itembaseunits'
@@ -1226,7 +1216,7 @@ async function getItemBaseUnits(req, res) {
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+          return res.status(200).send(recordset.rows)
         } else {
           return res.status(402).json('record not found')
         }
@@ -1241,29 +1231,9 @@ async function getItemBaseUnits(req, res) {
 }
 
 
-/**
- * @swagger
- * path:
- *  /itembaseunit/id:
- *    get:
- *      summary: Get itembaseunit setup by id
- *      tags: [ItemBaseUnit]
- *      parameters:
- *          name: id
- *          -in: path
- *          description: id of itembaseunit to fetch
- *          schema:
- *            type: string
- *          required: true
- *      responses:
- *        '200':
- *          description: A succesful response
- *          content:
- *            application/json:
- */
-
 async function getItemBaseUnitByID(req, res) {
   const id = req.params.id;
+  
   const pool = await db.dbConnection()
 
   const queryString = `select * FROM public.itembaseunits WHERE id=${id}`
@@ -1272,12 +1242,13 @@ async function getItemBaseUnitByID(req, res) {
 
     pool.query(queryString, function (err, recordset) {
 
-        if (recordset.rows.length > 0) {
+      console.log(id)
+        //if (recordset.rows.length > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json('record not found')
-        }
+       // } else {
+        //  return res.status(402).json('record not found')
+       // }
       
     });
 
@@ -1312,22 +1283,23 @@ async function createItemBaseUnit(req, res) {
 
   try {
 
-    await pool.query('BEGIN')
+    //await pool.query('BEGIN')
 
-    for (var i = 0; i < req.body.length; i++) {
+    //for (var i = 0; i < req.body.length; i++) {
 
       const values = [
-        req.body[i].baseunit,
-        req.body[i].isactive,
+        req.body.baseunit,
+        req.body.isactive,
         userid,
         userMachineName,
         userMachineIP
       ];
 
+      console.log(req.body.baseunit,req.body.isactive)
      await pool.query(createQuery,values ) 
   
-    }
-    await pool.query('COMMIT')
+    //}
+    //await pool.query('COMMIT')
     return res.status(201).json({ 'message': 'success' })
   
 

@@ -37,12 +37,12 @@ const swaggerOptions = {
       servers: ["http://localhost:5002"]
     }
   },
-    apis: ['./controllers/*.js']
+    apis: ['./routes/*.js']
 
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {explorer: true}));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //app.set('trust proxy');
 app.use(helmet());
