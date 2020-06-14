@@ -16,181 +16,96 @@ const userMachineIP = `${dbConfig.userIP}`;
  *   description: Payments management
  */
 
-/**
-* @swagger
-* tags:
-*   name: Operations
-*   description: Operations management
-*/
 
 
-/**
- * @swagger
- * /payment-mode:
- *  get:
- *    summary: Get all taxs
- *    tags: [Payments]
- *    description: Used to get all taxs
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+//GET PAYMENT MODE
+async function getPaymentModes(req, res, error) {
 
-async function getPaymentModes(req, res) {
-
-  const queryString ='select * from public.payment_modes'
+  const queryString = 'select * from public.payment_modes'
   const pool = await db.dbConnection()
 
   try {
 
     pool.query(queryString, function (err, recordset) {
 
-      if (err) {
-
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
-      } else {
-        if (recordset.rows.length > 0) {
+        if (recordset.rowCount > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json({ 'message': 'failed with no records found' })
-        }
 
-      }
+        } else {
+          return res.status(404).json({ 'message': 'failed with no records found' })
+        }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
   }
 }
 
-
-
-
-/**
- * @swagger
- * path:
- *  /payment-mode/id:
- *    get:
- *      summary: Get a tax by id
- *      tags: [Payments]
- *      parameters:
- *          name: catID
- *          -in: path
- *          description: id of tax to fetch
- *          schema:
- *            type: string
- *          required: true
- *      responses:
- *        '200':
- *          description: A succesful response
- *          content:
- *            application/json:
- */
-
-async function getPaymentModeByID(req, res) {
+//GET PAYMENT MODE BY ID
+async function getPaymentModeByID(req, res, error) {
 
   const id = req.params.id
-  const queryString=`select * FROM payment_modes WHERE id='${id}'`
+  const queryString = `select * FROM payment_modes WHERE id='${id}'`
   const pool = await db.dbConnection()
 
   try {
 
     pool.query(queryString, function (err, recordset) {
 
-      if (err) {
-
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
-      } else {
-        if (recordset.rows.length > 0) {
+        if (recordset.rowCount > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
 
-      }
+        } else {
+          return res.status(404).json({ 'message': 'failed' })
+        }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
   }
 
 }
 
 
 
-/**
- * @swagger
- * /payment-mode:
- *  post:
- *    summary: Add a new tax
- *    tags: [Payments]
- *    description: Used to create a tax
- *    responses:
- *      '200':
- *        description: A succesful response
- */
-
-async function createPaymentMode(req, res) {
+//ADD PAYMENT MODE
+async function createPaymentMode(req, res, error) {
 
   const values = [
     req.body.description,
     req.body.isactive,
     moment(new Date()),
-    req.body.userid
+    req.body.userid,
+    userMachineName,
+    userMachineIP
   ];
   const pool = await db.dbConnection()
 
-  const createQuery = `INSERT INTO public.payment_modes(description, isactive, create_date, create_user_id)
-        VALUES ('${req.body.description}', '${req.body.isactive}', '${moment(new Date())}', '${req.body.userid}')
-        returning *`;
+  const createQuery = `INSERT INTO public.payment_modes(description, isactive, create_date, create_user_id, usermachinename, usermachineip)
+    VALUES ($1, $2, $3, $4, $5, $6) returning *`;
 
   try {
 
-    pool.query(createQuery, function (err, recordset) {
+    const row_count = await pool.query(createQuery,values) 
 
-      if (err) {
-
-        return res.status(402).json('record insert failed with error: ' + helper.parseError(err, createQuery))
-
-      } else {
-        if (recordset.rows.length > 0) {
+        if (row_count.rowCount > 0) {
           // send records as a response
           return res.status(201).json({ 'message': 'success' })
+
         } else {
           return res.status(402).json({ 'message': 'failed' })
         }
 
-      }
-    });
-
   } catch (error) {
-    console.log(error);
-    res.end()
+    return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
   }
 }
 
 
-/**
-* @swagger
-* /payment-mode:
-*  put:
-*    summary: update a tax by ID
-*    tags: [Payments]
-*    description: Used to update a tax
-*    responses:
-*      '200':
-*        description: A succesful response
-*/
-
-async function updatePaymentMode(req, res) {
+//UPDATE PAYMENT MODE
+async function updatePaymentMode(req, res,error) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
@@ -198,114 +113,70 @@ async function updatePaymentMode(req, res) {
   const values = [
     req.body.description,
     req.body.isactive,
+    moment(new Date()),
     req.body.userid,
+    userMachineName,
+    userMachineIP
   ];
-  
-  const updateonequery = `UPDATE public.payment_modes SET description='${req.body.description}', 
-    isactive='${req.body.isactive}', modified_date='${moment(new Date())}', modifier_id='${req.body.userid}'
+
+  const updateonequery = `UPDATE public.payment_modes SET description='${req.body.description}', isactive='${req.body.isactive}', 
+  modified_date='${moment(new Date())}', modifier_id='${req.body.userid}', usermachinename='${userMachineName}', usermachineip='${userMachineIP}'
 	WHERE id = '${id}' returning *`;
 
   try {
 
-    pool.query(updateonequery, function (err, recordset) {
+    const row_count= await pool.query(updateonequery)
 
-      if (err) {
-
-        return res.status(402).json('record update failed with error: ' + helper.parseError(err, updateonequery))
-
-      } else {
-        if (recordset.rows.length > 0) {
+        if (row_count.rowCount > 0) {
           // send records as a response
           return res.status(201).json({ 'message': 'success' })
+
         } else {
           return res.status(402).json({ 'message': 'failed' })
         }
 
-      }
-    });
-
   } catch (error) {
-    console.log(error);
-    res.end()
-
-  }
-
-};
-
-//tax
-
-
-/**
- * @swagger
- * /tax:
- *  get:
- *    summary: Get all tax
- *    tags: [Outlets]
- *    description: Used to get all tax
- *    responses:
- *      '200':
- *        description: A succesful response
- */
-
-async function getOutlets(req, res) {
-
-  const queryString='SELECT * FROM public.outlets'
-  const pool = await db.dbConnection()
-
-  try {
-
-    pool.query(queryString, function (err, recordset) {
-
-      if (err) {
-
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json({ 'message': 'failed with no records found' })
-        }
-
-      }
-    });
-
-  } catch (error) {
-    console.log(error);
-    res.end()
+    return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
 
   }
 
 }
 
 
-//
-/**
- * @swagger
- * path:
- *  /tax/id:
- *    get:
- *      summary: Get a tax by id
- *      tags: [Outlets]
- *      parameters:
- *          name: id
- *          -in: path
- *          description: id of tax to fetch
- *          schema:
- *            type: string
- *          required: true
- *      responses:
- *        '200':
- *          description: A succesful response
- *          content:
- *            application/json:
- */
+//GET OUTLETS
+async function getOutlets(req, res, error) {
 
-async function getOutletsByID(req, res) {
+  const queryString = 'SELECT * FROM public.outlets'
+  const pool = await db.dbConnection()
+
+  try {
+
+    const row_count = await pool.query(queryString)
+
+    if (row_count.rowCount > 0) {
+
+      // send records as a response
+      return res.status(200).json(row_count.rows)
+
+    } else {
+      return res.status(404).json({ 'message': 'failed with no records found' })
+    }
+
+  } catch (error) {
+
+    return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+
+}
+
+
+//GET OUTLET BY ID
+
+async function getOutletsByID(req, res, error) {
 
   const id = req.params.id;
-  const queryString = `select * FROM public.outlets WHERE id='${id}'`
+  const queryString = `select * FROM public.outlets WHERE outletid='${id}'`
   const pool = await db.dbConnection()
 
   try {
@@ -314,22 +185,21 @@ async function getOutletsByID(req, res) {
 
       if (err) {
 
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+        return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
 
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          return res.status(404).json({ 'message': 'failed' })
         }
 
       }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
 
   }
 
@@ -337,62 +207,45 @@ async function getOutletsByID(req, res) {
 
 
 
-/**
- * @swagger
- * /outlet:
- *  post:
- *    summary: Add outlet tax
- *    tags: [Outlets]
- *    description: Used to create tax
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+//ADD OUTLET
 
 async function createOutlet(req, res) {
 
   const values = [
-    req.body.name,
-    req.body.taxID,
+    req.body.outletname,
     req.body.countryID,
     req.body.regionID,
     req.body.cityID,
     req.body.email,
     req.body.contactNumber,
-    moment(new Date()),
+    req.body.taxID,
     req.body.userid,
-    req.body.isactive
+    moment(new Date()),
+    req.body.isactive,
+    userMachineName,
+    userMachineIP
   ];
   const pool = await db.dbConnection()
 
-  const createQuery = `INSERT INTO public.outlets(name, tax_id, country, region, city, email, contactnumbers, create_date, 
-    create_user, isactive)VALUES ('${req.body.name}', '${req.body.taxID}', '${req.body.countryID}', '${req.body.regionID}', 
-    '${req.body.cityID}', '${req.body.email}', '${req.body.contactNumber}', '${moment(new Date())}', '${req.body.userid}', 
-    '${req.body.isactive}') returning *`;
- 
+  const createQuery = `INSERT INTO public.outlets(outlet_name, country_id, region_id, city_id, email, contactnumbers, tax_id, create_userid, 
+    create_date, isactive, usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning *`;
+
 
   try {
 
-    pool.query(createQuery, function (err, recordset) {
+    const row_count = await pool.query(createQuery, values)
+    if (row_count.rowCount > 0) {
 
-      if (err) {
+      return res.status(201).json({ 'message': 'success' })
+    } else {
 
-        return res.status(402).json('record insert failed with error: ' + helper.parseError(err, createQuery))
+      return res.status(402).json({ 'message': 'failed' })
 
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(201).json({ 'message': 'success' })
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
-
-      }
-    });
+    }
 
   } catch (error) {
-    console.log(error);
-    res.end()
+
+    return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
   }
 }
 
@@ -421,16 +274,16 @@ async function updateOutlet(req, res) {
     req.body.regionID,
     req.body.cityID,
     req.body.email,
-    req.body.contactNumber,
+    req.body.contactnumber,
     moment(new Date()),
     req.body.userid,
     req.body.isactive
   ];
 
-  const updateonequery = `UPDATE public.outlets SET name='${req.body.name}', tax_id='${req.body.taxID}', 
-    country='${req.body.countryID}', region='${req.body.regionID}', city='${req.body.cityID}', email='${req.body.email}', 
-    contactnumbers='${req.body.contactNumber}', modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}',
-    isactive='${req.body.isactive}' WHERE id = '${id}' returning *`;
+  const updateonequery = `UPDATE public.outlets SET outlet_name='${req.body.name}', tax_id='${req.body.taxID}', 
+    country_id='${req.body.countryID}', region_id='${req.body.regionID}', city_id='${req.body.cityID}', email='${req.body.email}', 
+    contactnumbers='${req.body.contactnumber}', modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}',
+    isactive='${req.body.isactive}', usermachinename ='${userMachineName}', usermachineip='${userMachineIP}' WHERE outletid = '${id}' returning *`;
 
   try {
 
@@ -441,7 +294,7 @@ async function updateOutlet(req, res) {
         return res.status(402).json('record update failed with error: ' + helper.parseError(err, updateonequery))
 
       } else {
-        if (recordset.rows.length > 0) {
+        if (recordset.rowCount > 0) {
           // send records as a response
           return res.status(201).json({ 'message': 'success' })
         } else {
@@ -460,172 +313,100 @@ async function updateOutlet(req, res) {
 
 //TAXES
 
-/**
- * @swagger
- * /tax:
- *  get:
- *    summary: Get all Taxes
- *    tags: [Tax]
- *    description: Used to get all taxes
- *    responses:
- *      '200':
- *        description: A succesful response
- */
-
-async function getTax(req, res) {
+//GET TAX
+async function getTax(req, res, error) {
   const queryString = 'SELECT * FROM public.taxes'
   const pool = await db.dbConnection()
 
   try {
 
     pool.query(queryString, function (err, recordset) {
-
-      if (err) {
-
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
-      } else {
-        if (recordset.rows.length > 0) {
+ 
+        if (recordset.rowCount > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
+
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          return res.status(404).json({ 'message': 'No Records Found' })
         }
 
-      }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
   }
 }
 
 
-/**
- * @swagger
- * path:
- *  /tax/id:
- *    get:
- *      summary: Get a tax by id
- *      tags: [Tax]
- *      parameters:
- *          name: id
- *          -in: path
- *          description: id of tax to fetch
- *          schema:
- *            type: string
- *          required: true
- *      responses:
- *        '200':
- *          description: A succesful response
- *          content:
- *            application/json:
- */
-
-async function getTaxByID(req, res) {
+//GET TAX BY ID
+async function getTaxByID(req, res, error) {
   const id = req.params.id;
-  const queryString = `SELECT * FROM public.taxes WHERE id ='${id}'`
+  const queryString = `SELECT * FROM public.taxes WHERE taxid ='${id}'`
   const pool = await db.dbConnection()
 
   try {
 
-    pool.query(queryString, function (err, recordset) {
+   const row_count = await pool.query(queryString)
 
-      if (err) {
-
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
+        if (row_count.rowCount > 0) {
+          
           return res.status(200).json(recordset.rows)
+
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          return res.status(404).json({ 'message': 'Rcord Not Found' })
         }
 
       }
-    });
 
-  } catch (error) {
-    console.log(error);
-    res.end()
-
+   catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
   }
 
 }
 
 
-/**
- * @swagger
- * /tax:
- *  post:
- *    summary: Add new tax
- *    tags: [Tax]
- *    description: Used to create tax
- *    responses:
- *      '200':
- *        description: A succesful response
- */
-
-async function createTax(req, res) {
+///ADD TAX
+async function createTax(req, res, error) {
 
   const values = [
-    req.body.description,
+    req.body.taxdescription,
     req.body.percentage,
     moment(new Date()),
     req.body.userid,
-    req.body.isactive
+    req.body.isactive,
+    userMachineName,
+    userMachineIP
   ];
 
   const pool = await db.dbConnection()
 
-  const createQuery = `INSERT INTO public.taxes(description, percentage, create_date, create_user, isactive) 
-    VALUES ('${req.body.description}', '${req.body.percentage}', '${moment(new Date())}', '${req.body.userid}',
-    '${req.body.isactive}') returning *`;
+  const createQuery = `INSERT INTO public.taxes(description, percentage, create_date, isactive, create_userid, 
+    usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`;
 
 
   try {
 
-    pool.query(createQuery, function (err, recordset) {
+   await pool.query(createQuery,values, function (err, recordset) {
 
-      if (err) {
-
-        return res.status(402).json('record insert failed with error: ' + helper.parseError(err, createQuery))
-
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
+      
+        if (recordset.rowCount > 0) {
+        
           return res.status(201).json({ 'message': 'success' })
+
         } else {
           return res.status(402).json({ 'message': 'failed' })
         }
-
-      }
+      
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
   }
 }
 
+//Update Tax
 
-/**
-* @swagger
-* /outlet:
-*  put:
-*    summary: update an tax by ID
-*    tags: [Outlets]
-*    description: Used to update an tax
-*    responses:
-*      '200':
-*        description: A succesful response
-*/
-
-async function updateTax(req, res) {
+async function updateTax(req, res, error) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
@@ -635,111 +416,68 @@ async function updateTax(req, res) {
     req.body.percentage,
     moment(new Date()),
     req.body.userid,
-    req.body.isactive
+    req.body.isactive,
+    userMachineName,
+    userMachineIP
   ];
 
   const updateonequery = `UPDATE public.taxes SET description='${req.body.description}', percentage='${req.body.percentage}', 
-    modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}', isactive='${req.body.isactive}' WHERE id = '${id}' returning *`;
+    modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}', isactive='${req.body.isactive}',
+    usermachinename='${userMachineName}', usermachineip='${userMachineIP}'  WHERE taxid = '${id}' returning *`;
 
   try {
 
-    pool.query(updateonequery, function (err, recordset) {
+    const row_count = await pool.query(updateonequery)
 
-      if (err) {
-
-        return res.status(402).json('record update failed with error: ' + helper.parseError(err, updateonequery))
-
-      } else {
-        if (recordset.rows.length > 0) {
+     
+        if (row_count.rowCount > 0) {
           // send records as a response
           return res.status(201).json({ 'message': 'success' })
         } else {
           return res.status(402).json({ 'message': 'failed' })
         }
 
-      }
-    });
-
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
   }
 
-};
+}
 
 
 //SUPPLIERS
 
-/**
-* @swagger
-* /supplier:
-*  get:
-*    summary: Get all Suppliers
-*    tags: [Suppliers]
-*    description: Used to get all suppliers
-*    responses:
-*      '200':
-*        description: A succesful response
-*/
-
-async function getSuppliers(req, res) {
+async function getSuppliers(req, res, error) {
   const queryString = 'SELECT * FROM public.suppliers'
   const pool = await db.dbConnection()
 
   try {
 
-    pool.query(queryString, function (err, recordset) {
+    const row_count = await pool.query(queryString)
 
-      if (err) {
+    if (row_count > 0) {
 
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+      return res.status(200).json(recordset.rows)
 
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
+    } else {
 
-        //res.status(200).json(recordset.rows);
+      return res.status(402).json({ 'message': 'failed' })
+    }
 
-      }
-    });
+    //res.status(200).json(recordset.rows);
 
-  } catch (error) {
-    console.log(error);
-    res.end()
+  }
+  catch (error) {
+
+    return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
 
   }
 }
 
-/**
-* @swagger
-* path:
-*  /supplier/id:
-*    get:
-*      summary: Get a supplier by id
-*      tags: [Suppliers]
-*      parameters:
-*          name: id
-*          -in: path
-*          description: id of supplier to fetch
-*          schema:
-*            type: string
-*          required: true
-*      responses:
-*        '200':
-*          description: A succesful response
-*          content:
-*            application/json:
-*/
 
 async function getSupplierByID(req, res) {
   const id = req.params.id;
   const pool = await db.dbConnection()
-  const query = `SELECT * FROM public.suppliers WHERE id ='${id}'`
+  const query = `SELECT * FROM public.suppliers WHERE supplierid ='${id}'`
 
   try {
 
@@ -752,137 +490,110 @@ async function getSupplierByID(req, res) {
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+          return res.status(201).json(recordset.rows)
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          return res.status(404).json({ 'message': 'Not Found' })
         }
 
       }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(402).json('record not found with error: ' + helper.parseError(err, query))
   }
 
 }
 
-
-/**
-* @swagger
-* /supplier:
-*  post:
-*    summary: Add new supplier
-*    tags: [Suppliers]
-*    description: Used to create supplier
-*    responses:
-*      '200':
-*        description: A succesful response
-*/
+//Create supplier
 
 async function createSupplier(req, res) {
 
   const pool = await db.dbConnection()
 
-  const createQuery = `INSERT INTO public.suppliers(name, address, phone_number, email, create_date, create_user_id, 
-        isactive) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`;
+  const createQuery = `INSERT INTO public.suppliers (name, address, phone_number, email, create_date, user_id, isactive,
+    usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7) returning *`;
 
   const values = [
-    req.body.name,
+    req.body.suppliername,
     req.body.address,
     req.body.phonenumber,
     req.body.email,
     moment(new Date()),
     req.body.userid,
-    req.body.isactive
+    req.body.isactive,
+    userMachineName,
+    userMachineIP
   ];
 
   try {
 
-    pool.query(createQuery, function (err, recordset) {
+    pool.query(createQuery, values, function (err, recordset) {
 
       if (err) {
 
-        return res.status(402).json('record insert failed with error: ' + helper.parseError(err, createQuery))
+        return res.status(400).json('record insert failed with error: ' + helper.parseError(err, createQuery))
 
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
           return res.status(201).json({ 'message': 'success' })
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          return res.status(404).json({ 'message': 'failed' })
         }
 
       }
     });
 
   } catch (error) {
-    console.log(error);
-    res.end()
-
+    return res.status(400).json('record insert failed with error: ' + helper.parseError(err, createQuery))
   }
 }
 
 
-/**
-* @swagger
-* /supplier/id:
-*  put:
-*    summary: update a supplier by ID
-*    tags: [Suppliers]
-*    description: Used to update a supplier
-*    responses:
-*      '200':
-*        description: A succesful response
-*/
+//update supplier
 
-async function updateSupplier(req, res) {
+async function updateSupplier(req, res, error) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
 
   const values = [
-    req.body.name,
+    req.body.suppliername,
     req.body.address,
     req.body.phonenumber,
     req.body.email,
     moment(new Date()),
     req.body.userid,
-    req.body.isactive
+    req.body.isactive,
+    userMachineName,
+    userMachineIP
   ];
 
-  console.log(values)
-  //const findonequery = 'SELECT * FROM public.suppliers WHERE id = ($1)';
-  const updateonequery = `UPDATE public.suppliers SET name='${req.body.name}', address='${req.body.address}', 
+
+  const updateonequery = `UPDATE public.suppliers SET name='${req.body.suppliername}', address='${req.body.address}', 
     phone_number='${req.body.phonenumber}', email='${req.body.email}', isactive='${req.body.isactive}', 
-    modified_date='${moment(new Date())}', modifier_user_id='${req.body.userid}' WHERE id = '${id}' returning *`;
+    modified_date='${moment(new Date())}', m_user_id='${req.body.userid}', userMachineName='${userMachineName}',
+    usermachineip='${userMachineIP}' WHERE supplierid = '${id}' returning *`;
 
   try {
 
-    pool.query(updateonequery, function (err, recordset) {
+    const row_count = await pool.query(updateonequery)
 
-      if (err) {
+    console.log('update', row_count.rowCount)
+    if (row_count.rowCount > 0) {
 
-        return res.status(402).json('record update failed with error: ' + helper.parseError(err, updateonequery))
+      return res.status(201).json({ 'message': 'success' })
 
-      } else {
-        if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(201).json({ 'message': 'success' })
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
+    } else {
 
-      }
-    });
-
-  } catch (error) {
-    console.log(error);
-    res.end()
+      return res.status(404).json({ 'message': 'failed' })
+    }
+  }
+  catch (error) {
+    return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
 
   }
-};
+}
 
 
 /**
@@ -1036,27 +747,6 @@ async function getEpaymentAPI(req, res) {
 
 }
 
-
-/**
- * @swagger
- * path:
- *  /e-paymentapi/id:
- *    get:
- *      summary: Get e-payment setup by id
- *      tags: [E-Payments]
- *      parameters:
- *          name: catID
- *          -in: path
- *          description: id of e-payment to fetch
- *          schema:
- *            type: string
- *          required: true
- *      responses:
- *        '200':
- *          description: A succesful response
- *          content:
- *            application/json:
- */
 
 async function getEpaymentAPIByID(req, res) {
   const id = req.params.id;
@@ -1218,14 +908,14 @@ async function getItemBaseUnits(req, res) {
           // send records as a response
           return res.status(200).send(recordset.rows)
         } else {
-          return res.status(402).json('record not found')
+          return res.status(404).json('record not found')
         }
 
       }
     });
 
   } catch (error) {
-    return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+    return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
   }
 
 }
@@ -1233,7 +923,7 @@ async function getItemBaseUnits(req, res) {
 
 async function getItemBaseUnitByID(req, res) {
   const id = req.params.id;
-  
+
   const pool = await db.dbConnection()
 
   const queryString = `select * FROM public.itembaseunits WHERE id=${id}`
@@ -1242,44 +932,30 @@ async function getItemBaseUnitByID(req, res) {
 
     pool.query(queryString, function (err, recordset) {
 
-      console.log(id)
-        //if (recordset.rows.length > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
-       // } else {
-        //  return res.status(402).json('record not found')
-       // }
-      
+      if (recordset.rows.length > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
+      } else {
+        return res.status(404).json('record not found')
+      }
     });
 
   } catch (error) {
-    return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
+    return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
 
   }
 
 }
 
 
-
-/**
- * @swagger
- * /itembaseunit:
- *  post:
- *    summary: Add new Item Base Unit
- *    tags: [ItemBaseUnit]
- *    description: Used to create Item Base Unit
- *    responses:
- *      '200':
- *        description: A succesful response
- */
-
+//add item base unit
 async function createItemBaseUnit(req, res) {
 
   const pool = await db.dbConnection()
 
   const createQuery = `INSERT INTO public.itembaseunits(baseunit, isactive, create_user, usermachinename, usermachineip) 
   VALUES ($1, $2, $3, $4, $5) returning *`;
-  
+
 
   try {
 
@@ -1287,21 +963,20 @@ async function createItemBaseUnit(req, res) {
 
     //for (var i = 0; i < req.body.length; i++) {
 
-      const values = [
-        req.body.baseunit,
-        req.body.isactive,
-        userid,
-        userMachineName,
-        userMachineIP
-      ];
+    const values = [
+      req.body.baseunit,
+      req.body.isactive,
+      userid,
+      userMachineName,
+      userMachineIP
+    ];
 
-      console.log(req.body.baseunit,req.body.isactive)
-     await pool.query(createQuery,values ) 
-  
+    await pool.query(createQuery, values)
+
     //}
     //await pool.query('COMMIT')
     return res.status(201).json({ 'message': 'success' })
-  
+
 
   } catch (error) {
 
@@ -1311,19 +986,9 @@ async function createItemBaseUnit(req, res) {
   }
 }
 
-/**
- * @swagger
- * /itembaseunit:
- *  put:
- *    summary: update itembaseunit setup by ID
- *    tags: [E-Payments]
- *    description: Used to update e-payment setup
- *    responses:
- *      '200':
- *        description: A succesful response
- */
 
-async function updateItemBaseUnit(req, res,err) {
+//update item base unit
+async function updateItemBaseUnit(req, res, err) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
@@ -1336,19 +1001,26 @@ async function updateItemBaseUnit(req, res,err) {
     userMachineIP
   ];
 
-  //const findonequery = 'SELECT * FROM public.epaymentapis WHERE id = ($1)';
-
   const updateonequery = `UPDATE public.itembaseunits SET baseunit='${req.body.baseunit}', isactive='${req.body.isactive}', modified_date='${moment(new Date())}', 
   modifier_userid='${userid}', usermachinename='${userMachineName}', usermachineip='${userMachineIP}' WHERE id = '${id}' returning *`
 
-    try {
-    
-      await pool.query(updateonequery)
+  try {
+
+    const row_count = await pool.query(updateonequery)
+
+    if (row_count.rowCount > 0) {
+
       return res.status(201).json({ 'message': 'success' })
 
-    } catch (err) {
-      return res.status(402).json('record insert failed with error: ' + helper.parseError(err, updateonequery))
+    } else {
+
+      return res.status(404).json({ 'message': 'not found' })
     }
+
+
+  } catch (err) {
+    return res.status(400).json('record insert failed with error: ' + helper.parseError(err, updateonequery))
+  }
 
 }
 

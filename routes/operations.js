@@ -18,27 +18,499 @@ router.get('/',detailsController.home_page);
 
 //payment modes routes
 
+/**
+ * @swagger
+ * /payment-mode:
+ *  get:
+ *    summary: Returns all Payment modes
+ *    tags: [Payment Modes]
+ *    description: Get all Payment Modes
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No records found
+ *      '400':
+ *        description: Unexpected error
+ */
 router.get('/payment-mode',operationsController.getPaymentModes);
+
+
+/**
+ * @swagger
+ * path:
+ *   /payment-mode/{id}:
+ *     get:
+ *       summary: Returns a Payment Mode by id
+ *       tags: [Payment Modes]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of PaymentMode to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified PaymentMode ID is invalid (not a number).
+ *         '404':
+ *           description: A PaymentMode with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
 router.get('/payment-mode/:id',operationsController.getPaymentModeByID);
+
+/**
+ * @swagger
+ *
+ * /payment-mode:
+ *   post:
+ *     summary: Add New Payment Mode
+ *     tags: [Payment Modes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               isactive:
+ *                 type: boolean
+ *               userid:
+ *                 type: integer
+ *     responses:
+ *       '201':
+ *         description: created
+ *       '402':
+ *         description: failed
+ *       '400':
+ *         description: Unexpected error
+ */
 router.post('/payment-mode',operationsController.createPaymentMode);
+
+/**
+ * @swagger
+ *
+ * /payment-mode/{id}:
+ *   put:
+ *     summary: Update Payment Mode
+ *     tags: [Payment Modes]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of outlet to update
+ *         shema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               isactive:
+ *                 type: boolean
+ *               userid:
+ *                 type: integer
+ *     responses:
+ *       '201':
+ *         description: created
+ *       '402':
+ *         description: failed
+ *       '400':
+ *         description: Unexpected error
+ */
 router.put('/payment-mode/:id',operationsController.updatePaymentMode);
 
 //Outlet routes
+
+/**
+ * @swagger
+ * /outlet:
+ *  get:
+ *    summary: Returns all outlets(branches)
+ *    tags: [Outlets]
+ *    description: Get all Outlets
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No records found
+ *      '400':
+ *        description: Unexpected error
+ */
 router.get('/outlet',operationsController.getOutlets);
+
+/**
+ * @swagger
+ * path:
+ *   /outlet/{id}:
+ *     get:
+ *       summary: Returns an Outlet by id
+ *       tags: [Outlets]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of Outlet to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified Outlet ID is invalid (not a number).
+ *         '404':
+ *           description: An Outlet with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
 router.get('/outlet/:id',operationsController.getOutletsByID);
+
+
+/**
+ * @swagger
+ *
+ * /outlet:
+ *   post:
+ *     summary: Add an Outlet (Branch)
+ *     tags: [Outlets]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               outletname:
+ *                 type: string
+ *               countryID:
+ *                 type: integer
+ *               regionID:
+ *                 type: integer
+ *               cityID:
+ *                 type: integer
+ *               email:
+ *                 type: string
+ *               contactnumber:
+ *                 type: string
+ *               taxID:
+ *                 type: integer
+ *               userid:
+ *                 type: integer
+ *               isactive:
+ *                 type: boolean
+ *     responses:
+ *       '201':
+ *         description: created
+ *       '402':
+ *         description: failed
+ *       '400':
+ *         description: Unexpected error
+ */
 router.post('/outlet',operationsController.createOutlet);
+
+/**
+ * @swagger
+ *
+ * /outlet/{id}:
+ *   put:
+ *     summary: Update an Outlet (Branch)
+ *     tags: [Outlets]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of outlet to update
+ *         shema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               outletname:
+ *                 type: string
+ *               countryID:
+ *                 type: integer
+ *               regionID:
+ *                 type: integer
+ *               cityID:
+ *                 type: integer
+ *               email:
+ *                 type: string
+ *               contactnumber:
+ *                 type: string
+ *               taxID:
+ *                 type: integer
+ *               userid:
+ *                 type: integer
+ *               isactive:
+ *                 type: boolean
+ *     responses:
+ *       '201':
+ *         description: created
+ *       '402':
+ *         description: failed
+ *       '400':
+ *         description: Unexpected error
+ */
 router.put('/outlet/:id',operationsController.updateOutlet);
 
 //Tax routes
+
+
+/**
+ * @swagger
+ * /tax:
+ *  get:
+ *    summary: Returns all Tax
+ *    tags: [Tax]
+ *    description: Get all Tax
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No Record found
+ *      '400':
+ *        description: Unexpected error
+ */
 router.get('/tax',operationsController.getTax);
+
+/**
+ * @swagger
+ * path:
+ *   /tax/{id}:
+ *     get:
+ *       summary: Returns Tax by id
+ *       tags: [Tax]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of Tax to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified Tax ID is invalid (not a number).
+ *         '404':
+ *           description: A Tax with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
 router.get('/tax/:id',operationsController.getTaxByID);
+
+/**
+ * @swagger
+ *
+ * /tax:
+ *   post:
+ *     summary: Add New Tax
+ *     tags: [Tax]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               taxdescription:
+ *                 type: string
+ *               percentage:
+ *                 type: double
+ *               userid:
+ *                 type: integer
+ *               isactive:
+ *                 type: boolean
+ *     responses:
+ *       '200':
+ *         description: created
+ *       '402':
+ *         description: failed
+ *       '400':
+ *         description: Unexpected error
+ */
 router.post('/tax',operationsController.createTax);
+
+/**
+ * @swagger
+ * path:
+ *   /tax/{id}:
+ *     put:
+ *       summary: Updates Tax by id
+ *       tags: [Tax]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of Tax to update
+ *           schema:
+ *             type: integer
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 taxdescription:
+ *                 type: string
+ *               percentage:
+ *                 type: double
+ *               userid:
+ *                 type: integer
+ *               isactive:
+ *                 type: boolean
+ *       responses:
+ *         '200':
+ *           description: updated
+ *         '402':
+ *           description: failed
+ *         '400':
+ *           description: Unexpected error
+ */
 router.put('/tax/:id',operationsController.updateTax);
 
 //Supplier routes
+
+/**
+ * @swagger
+ * /supplier:
+ *  get:
+ *    summary: Returns all suppliers
+ *    tags: [Suppliers]
+ *    description: Get all Suppliers
+ *    responses:
+ *      '200':
+ *        description: OK
+ */
 router.get('/supplier',operationsController.getSuppliers);
+
+/**
+ * @swagger
+ * path:
+ *   /supplier/{id}:
+ *     get:
+ *       summary: Returns a Supplier by id
+ *       tags: [Suppliers]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of item base unit to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified Supplier ID is invalid (not a number).
+ *         '404':
+ *           description: A Supplier with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
 router.get('/supplier/:id',operationsController.getSupplierByID);
+
+/**
+ * @swagger
+ *
+ * /supplier:
+ *   post:
+ *     summary: Add a Supplier
+ *     tags: [Suppliers]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               suppliername:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               phonenumber:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               isactive:
+ *                 type: string
+ *               userid:
+ *                 type: integer
+ *     responses:
+ *       '200':
+ *         description: created
+ *       '400':
+ *         description: Unexpected error
+ */
 router.post('/supplier',operationsController.createSupplier);
+
+/**
+ * @swagger
+ * path:
+ *   /supplier/{id}:
+ *     put:
+ *       summary: Updates a Supplier by id
+ *       tags: [Suppliers]
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *           required: true
+ *           description: id of Supplier to update
+ *           schema:
+ *             type: integer
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 suppliername:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 phonenumber:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 isactive:
+ *                   type: string
+ *                 userid:
+ *                   type: integer
+ *       responses:
+ *         '200':
+ *           description: updated
+ */
 router.put('/supplier/:id',operationsController.updateSupplier);
 
 
@@ -56,10 +528,10 @@ router.put('/e-payment/:id',operationsController.updateEpaymentAPI);
  *  get:
  *    summary: Returns all Item Base Units
  *    tags: [ItemBaseUnit]
- *    description: Used to get all Item Base Units
+ *    description: Get all Item Base Units
  *    responses:
  *      '200':
- *        description: A succesful response
+ *        description: OK
  */
 router.get('/itembaseunit',operationsController.getItemBaseUnits);
 
@@ -117,7 +589,7 @@ router.get('/itembaseunit/:id',operationsController.getItemBaseUnitByID);
  *
  * /itembaseunit:
  *   post:
- *     summary: create item base unit
+ *     summary: Create Item Base Unit
  *     tags: [ItemBaseUnit]
  *     requestBody:
  *       required: true
@@ -131,7 +603,7 @@ router.get('/itembaseunit/:id',operationsController.getItemBaseUnitByID);
  *               isactive:
  *                 type: string
  *     responses:
- *       200:
+ *       '200':
  *         description: created
  */
 
@@ -142,7 +614,7 @@ router.post('/itembaseunit',operationsController.createItemBaseUnit);
  * path:
  *   /itembaseunit/{id}:
  *     put:
- *       summary: updates an item base unit by id
+ *       summary: Updates an Item Base Unit by id
  *       tags: [ItemBaseUnit]
  *       parameters:
  *         - in: path
@@ -162,9 +634,9 @@ router.post('/itembaseunit',operationsController.createItemBaseUnit);
  *                   type: string
  *                 isactive:
  *                   type: string
- *     responses:
- *       200:
- *         description: base unit updated
+ *       responses:
+ *         '200':
+ *           description: updated
  */
 
 router.put('/itembaseunit/:id',operationsController.updateItemBaseUnit);
