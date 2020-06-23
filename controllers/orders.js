@@ -4,20 +4,12 @@ var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
 var os = require('os');
+const { help } = require('../util/winston');
+var dbConfig = require('../config');
 
-
-
-/**
- * @swagger
- * /order-status:
- *  get:
- *    summary: Get all taxs
- *    tags: [Orders]
- *    description: Used to get all taxs
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+const userid = `${dbConfig.app_user}`;
+const userMachineName = `${dbConfig.userMachine}`;
+const userMachineIP = `${dbConfig.userIP}`;
 
 async function getOrderStatus(req, res) {
 
@@ -53,26 +45,6 @@ async function getOrderStatus(req, res) {
 
 }
 
-/**
-* @swagger
-* path:
-*  /orderstatus/id:
-*    get:
-*      summary: Get orderr status by id
-*      tags: [Orders]
-*      parameters:
-*          name: catID
-*          -in: path
-*          description: id of orderstatus to fetch
-*          schema:
-*            type: string
-*          required: true
-*      responses:
-*        '200':
-*          description: A succesful response
-*          content:
-*            application/json:
-*/
 
 async function getOrderStatusByID(req, res) {
 
@@ -108,106 +80,116 @@ async function getOrderStatusByID(req, res) {
 }
 
 
-/**
- * @swagger
- * /outlet:
- *  post:
- *    summary: Add outlet tax
- *    tags: [Outlets]
- *    description: Used to create tax
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+//GET OUTLETS
+async function getOrdersSummary(req, res, error) {
 
+  const queryString = `SELECT * FROM public.orders WHERE archived = false `
+  const pool = await db.dbConnection()
+
+  try {
+
+    const row_count = await pool.query(queryString)
+
+    if (row_count.rowCount > 0) {
+
+      // send records as a response
+      return res.status(200).json(row_count.rows)
+
+    } else {
+      return res.status(404).json({ 'message': 'failed with no records found' })
+    }
+
+  } catch (error) {
+
+    return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+
+}
+
+
+//CREATE PURCHASE ORDER
 async function createOrder(req, res, err) {
 
   const pool = await db.dbConnection()
 
-  const createOrderQuery = `INSERT INTO public.orders(order_date, ordertime, order_statusid, outletid, invoiceno, 
-    linestotal, totalvalue, supplierid, discount, vatid, awardno, orderterms, ordercomments, createuserid, stageid, statusid)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning id`;
+  const createOrderQuery = `INSERT INTO public.orders(invoiceno, awardno, linestotal, totalvalue, supplierid, discount, vatid, orderterms, 
+    ordercomments, outletid, createuserid, stageid, statusid, order_date, ordertime, usermachinename, usermachineip)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) returning id`;
 
   const createOrderLinesQuery = `INSERT INTO public.orderlines(orderid, itemid, itemunitid, quantity, unitcost, stocklevel, 
     reorderlevel, remark, approvallevelid, approvalstatusid, stageid, statusid, createtime)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *`;
 
 
+  let totalValue = helper.sumOfArrayWithParameter(req.body.orderdetails, 'unitCost');
+
+  console.log(totalValue)
+
   const ordervalues = [
-    req.body[0].orderDate,
-    req.body[0].orderTime,
-    req.body[0].orderStatID,
-    req.body[0].outletID,
-    req.body[0].invoiceNum,
-    req.body[0].linesTotal,
-    req.body[0].totalValue,
-    req.body[0].supplierID,
-    req.body[0].discount,
-    req.body[0].vatID,
-    req.body[0].awardNo,
-    req.body[0].orderTerms,
-    req.body[0].orderComments,
-    req.body[0].userid,
-    req.body[0].stageID,
-    req.body[0].statusID,
+    req.body.invoiceNum,
+    req.body.awardNo,
+    req.body.orderdetails.length,
+    totalValue,
+    req.body.supplierID,
+    req.body.discount,
+    req.body.vatID,
+    req.body.orderTerms,
+    req.body.orderComments,
+    req.body.outletID,
+    req.body.create_userid,
+    req.body.stageID,
+    req.body.statusID,
+    req.body.orderDate,
+    req.body.orderTime,
+    userMachineName,
+    userMachineIP
   ];
 
   try {
 
     
+
     await pool.query('BEGIN')
 
    const records = await pool.query(createOrderQuery, ordervalues)
 
     orderID = records.rows[0].id
-    console.log('id', orderID)
 
-        for (var i = 1; i < req.body.length; ++i) {
+        for (var i = 0; i < req.body.orderdetails.length; ++i) {
   
           var orderLinesvalues = [
             orderID,
-            req.body[i].itemID,
-            req.body[i].itemUnitID,
-            req.body[i].qty,
-            req.body[i].unitCost,
-            req.body[i].stockLevel,
-            req.body[i].reOrderLevel,
-            req.body[i].remark,
-            req.body[i].approvaLevelID,
-            req.body[i].approvaSatusID,
-            req.body[i].stageID,
-            req.body[i].statusID,
+            req.body.orderdetails[i].itemID,
+            req.body.orderdetails[i].itemUnitID,
+            req.body.orderdetails[i].qty,
+            req.body.orderdetails[i].unitCost,
+            req.body.orderdetails[i].stockLevel,
+            req.body.orderdetails[i].reOrderLevel,
+            req.body.orderdetails[i].remark,
+            req.body.orderdetails[i].approvaLevelID,
+            req.body.orderdetails[i].approvaSatusID,
+            req.body.orderdetails[i].stageID,
+            req.body.orderdetails[i].statusID,
             req.body.createTime
           ];
 
-          await pool.query(createOrderLinesQuery, orderLinesvalues)
+          await pool.query(createOrderLinesQuery, orderLinesvalues) 
 
   } 
 
   await pool.query('COMMIT')
-  res.status(201).json({ 'message': 'created succesfully' });
+  res.status(201).json({ 'message': 'success' });
 
 }
   catch (error) {
-
-    console.log('inside-error','i am here')
     await pool.query('ROLLBACK')
-    res.status(402).json('record insert failed with error: ' + helper.parseError(error))
+    res.status(402).json('record insert failed with error: ' + helper.parseError(error, createOrderQuery))
      
   }
 }
 
-/**
- * @swagger
- * /outlet:
- *  post:
- *    summary: Receiver orders
- *    tags: [Orders]
- *    description: Used to receive purcahse orders
- *    responses:
- *      '200':
- *        description: A succesful response
- */
+
 
 async function createOrderReceival(req, res, err) {
 
@@ -279,7 +261,7 @@ async function createOrderReceival(req, res, err) {
   } catch (error) {
 
     pool.query('ROLLBACK')
-    return res.status(402).json('record insert failed with error: ' + helper.parseError(err, createQuery))
+    return res.status(402).json('record insert failed with error: ' + helper.parseError(error, createQuery))
 
   }
 
@@ -289,5 +271,6 @@ module.exports = {
   getOrderStatus,
   getOrderStatusByID,
   createOrder,
-  createOrderReceival
+  createOrderReceival,
+  getOrdersSummary
 }

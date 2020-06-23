@@ -83,7 +83,7 @@ router.get('/product-category/:id',productsController.getProductCategoryID);
  *                 type: string
  *               isactive:
  *                 type: boolean
- *               userid:
+ *               userId:
  *                 type: integer
  *     responses:
  *       '201':
@@ -118,7 +118,7 @@ router.post('/product-category',productsController.createPoductCategory);
  *                   type: string
  *                 isactive:
  *                   type: boolean
- *                 userid:
+ *                 userId:
  *                   type: integer
  *       responses:
  *         '201':

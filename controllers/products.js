@@ -67,7 +67,7 @@ async function createPoductCategory(req, res, error) {
   const pool = await db.dbConnection()
 
   const createQuery = `INSERT INTO public.product_categories(category, isactive, create_userid, create_date, usermachinename, usermachineip) 
-    VALUES ( $1, $2, $3, $4, $5, $6); returning *`;
+    VALUES ( $1, $2, $3, $4, $5, $6) returning *`;
 
   const values = [
     req.body.category,
@@ -116,7 +116,6 @@ async function updateProductCategory(req, res, error) {
     modified_date='${moment(new Date())}', modifier_userid='${req.body.userId}', usermachinename='${userMachineName}', 
     usermachineip='${userMachineIP}' WHERE id = '${id}' returning *`;
 
-  const confirmed = await helper.confirmRecord(findonequery, id);
 
   try {
     //update is done here
@@ -126,13 +125,13 @@ async function updateProductCategory(req, res, error) {
 
       res.status(201).json({ 'message': 'success' });
     } else {
-      res.status(402).json({ 'message': 'updated' });
+      res.status(402).json({ 'message': 'failed' });
     }
 
 
   } catch (error) {
 
-    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, updateonequery))
   }
 
 }

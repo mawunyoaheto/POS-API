@@ -81,6 +81,7 @@ app.use('/usercategory',routes);
 app.use('/usercategory/:id',routes);
 app.use('/usertypes',routes); 
 app.use('/usertypes/:id',routes); 
+app.use('/useroutlets/:id',routes); 
 app.use('/login',routes);
 app.use('*',routes);
 

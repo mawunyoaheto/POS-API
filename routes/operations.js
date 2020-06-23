@@ -135,21 +135,6 @@ router.put('/payment-mode/:id',operationsController.updatePaymentMode);
 
 //Outlet routes
 
-/**
- * @swagger
- * /outlet:
- *  get:
- *    summary: Returns all outlets(branches)
- *    tags: [Outlets]
- *    description: Get all Outlets
- *    responses:
- *      '200':
- *        description: OK
- *      '404':
- *        description: No records found
- *      '400':
- *        description: Unexpected error
- */
 router.get('/outlet',operationsController.getOutlets);
 
 /**
@@ -341,7 +326,7 @@ router.get('/tax/:id',operationsController.getTaxByID);
  *               taxdescription:
  *                 type: string
  *               percentage:
- *                 type: double
+ *                 type: float
  *               userid:
  *                 type: integer
  *               isactive:
@@ -380,7 +365,7 @@ router.post('/tax',operationsController.createTax);
  *                 taxdescription:
  *                 type: string
  *               percentage:
- *                 type: double
+ *                 type: float
  *               userid:
  *                 type: integer
  *               isactive:
