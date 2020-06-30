@@ -126,7 +126,7 @@ async function getAllUsers(req, res) {
 
   const pool = await db.dbConnection()
 
-  const getUserQuery = `SELECT * FROM users WHERE Archived = 'No'`;
+  const getUserQuery = `SELECT * FROM users WHERE Archived = 'false'`;
 
   try {
     pool.query(getUserQuery, function (err, recordset) {

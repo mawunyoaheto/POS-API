@@ -45,6 +45,90 @@ const Helper = {
 
 }
 
+function sumOfArrayWithParameter(array, parameter) {
+  let sum = null;
+  if (array && array.length > 0 && typeof parameter === 'string') {
+    sum = 0;
+    for (let e of array) if (e && e.hasOwnProperty(parameter)) sum += e[parameter];
+  }
+  return sum;
+}
+
+
+//function to gell all modules of the app
+async function getModules() {
+
+  const pool = await db.dbConnection()
+
+  const getQuery = `SELECT * FROM public.modules`;
+
+  try {
+    pool.query(getQuery, function (err, recordset) {
+
+      if (err) {
+
+        console.log('getModules', err)
+
+      } else {
+
+        // send records as a response
+        return recordset.rows;
+      }
+    });
+  }
+
+  catch (error) {
+    res.status(402).json('record insert failed with error: ' + parseError(error, getQuery))
+  }
+}
+
+async function getModuleTranctions() {
+  const pool = await db.dbConnection()
+
+  const getQuery = `SELECT * FROM public.moduletransactions`;
+
+  try {
+    pool.query(getQuery, function (err, recordset) {
+
+      if (err) {
+
+        console.log('getModulesTrans', err)
+      } else {
+
+        // send records as a response
+        return recordset.rows;
+      }
+    });
+  }
+
+  catch (error) {
+    console.log('getModulesTrans', error)
+  }
+}
+
+async function getModuleTransactionsByModuleID(moduleID) {
+
+  const pool = await db.dbConnection()
+
+  try {
+
+    const recordset = await pool.query(`select * FROM public.moduletransactions WHERE moduleid='${moduleID}'`)
+
+    if (recordset.rowCount > 0) {
+      // send records as a response
+      return recordset.rows
+
+    } else {
+      console.log('getModuleTransactionByID', 'No Records')
+    }
+
+
+  } catch (error) {
+    console.log('getModuleTransactionByID', error)
+  }
+
+}
+
 async function confirmRecord(queryString, queryValues, res, next) {
 
   try {
@@ -175,5 +259,9 @@ module.exports = {
   Helper,
   confirmRecord,
   getHosnameIP,
-  parseError
+  parseError,
+  sumOfArrayWithParameter,
+  getModules,
+  getModuleTranctions,
+  getModuleTransactionsByModuleID
 }

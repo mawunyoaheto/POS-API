@@ -28,13 +28,13 @@ async function getPaymentModes(req, res, error) {
 
     pool.query(queryString, function (err, recordset) {
 
-        if (recordset.rowCount > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
+      if (recordset.rowCount > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
 
-        } else {
-          return res.status(404).json({ 'message': 'failed with no records found' })
-        }
+      } else {
+        return res.status(404).json({ 'message': 'failed with no records found' })
+      }
     });
 
   } catch (error) {
@@ -53,13 +53,13 @@ async function getPaymentModeByID(req, res, error) {
 
     pool.query(queryString, function (err, recordset) {
 
-        if (recordset.rowCount > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
+      if (recordset.rowCount > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
 
-        } else {
-          return res.status(404).json({ 'message': 'failed' })
-        }
+      } else {
+        return res.status(404).json({ 'message': 'failed' })
+      }
     });
 
   } catch (error) {
@@ -88,15 +88,15 @@ async function createPaymentMode(req, res, error) {
 
   try {
 
-    const row_count = await pool.query(createQuery,values) 
+    const row_count = await pool.query(createQuery, values)
 
-        if (row_count.rowCount > 0) {
-          // send records as a response
-          return res.status(201).json({ 'message': 'success' })
+    if (row_count.rowCount > 0) {
+      // send records as a response
+      return res.status(201).json({ 'message': 'success' })
 
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
+    } else {
+      return res.status(402).json({ 'message': 'failed' })
+    }
 
   } catch (error) {
     return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
@@ -105,7 +105,7 @@ async function createPaymentMode(req, res, error) {
 
 
 //UPDATE PAYMENT MODE
-async function updatePaymentMode(req, res,error) {
+async function updatePaymentMode(req, res, error) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
@@ -125,15 +125,15 @@ async function updatePaymentMode(req, res,error) {
 
   try {
 
-    const row_count= await pool.query(updateonequery)
+    const row_count = await pool.query(updateonequery)
 
-        if (row_count.rowCount > 0) {
-          // send records as a response
-          return res.status(201).json({ 'message': 'success' })
+    if (row_count.rowCount > 0) {
+      // send records as a response
+      return res.status(201).json({ 'message': 'success' })
 
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
+    } else {
+      return res.status(402).json({ 'message': 'failed' })
+    }
 
   } catch (error) {
     return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
@@ -321,14 +321,14 @@ async function getTax(req, res, error) {
   try {
 
     pool.query(queryString, function (err, recordset) {
- 
-        if (recordset.rowCount > 0) {
-          // send records as a response
-          return res.status(200).json(recordset.rows)
 
-        } else {
-          return res.status(404).json({ 'message': 'No Records Found' })
-        }
+      if (recordset.rowCount > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
+
+      } else {
+        return res.status(404).json({ 'message': 'No Records Found' })
+      }
 
     });
 
@@ -346,19 +346,19 @@ async function getTaxByID(req, res, error) {
 
   try {
 
-   const row_count = await pool.query(queryString)
+    const row_count = await pool.query(queryString)
 
-        if (row_count.rowCount > 0) {
-          
-          return res.status(200).json(recordset.rows)
+    if (row_count.rowCount > 0) {
 
-        } else {
-          return res.status(404).json({ 'message': 'Rcord Not Found' })
-        }
+      return res.status(200).json(recordset.rows)
 
-      }
+    } else {
+      return res.status(404).json({ 'message': 'Rcord Not Found' })
+    }
 
-   catch (error) {
+  }
+
+  catch (error) {
     return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
   }
 
@@ -386,17 +386,17 @@ async function createTax(req, res, error) {
 
   try {
 
-   await pool.query(createQuery,values, function (err, recordset) {
+    await pool.query(createQuery, values, function (err, recordset) {
 
-      
-        if (recordset.rowCount > 0) {
-        
-          return res.status(201).json({ 'message': 'success' })
 
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
-      
+      if (recordset.rowCount > 0) {
+
+        return res.status(201).json({ 'message': 'success' })
+
+      } else {
+        return res.status(402).json({ 'message': 'failed' })
+      }
+
     });
 
   } catch (error) {
@@ -429,13 +429,13 @@ async function updateTax(req, res, error) {
 
     const row_count = await pool.query(updateonequery)
 
-     
-        if (row_count.rowCount > 0) {
-          // send records as a response
-          return res.status(201).json({ 'message': 'success' })
-        } else {
-          return res.status(402).json({ 'message': 'failed' })
-        }
+
+    if (row_count.rowCount > 0) {
+      // send records as a response
+      return res.status(201).json({ 'message': 'success' })
+    } else {
+      return res.status(402).json({ 'message': 'failed' })
+    }
 
   } catch (error) {
     return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
@@ -988,7 +988,7 @@ async function createItemBaseUnit(req, res) {
 
 
 //update item base unit
-async function updateItemBaseUnit(req, res, err) {
+async function updateItemBaseUnit(req, res, error) {
 
   const id = req.params.id;
   const pool = await db.dbConnection();
@@ -1024,6 +1024,160 @@ async function updateItemBaseUnit(req, res, err) {
 
 }
 
+//GET modules 
+async function getModules(req, res, error) {
+
+  const queryString = `select * from public.modules WHERE isactive = 'true'`
+  const pool = await db.dbConnection()
+
+  try {
+
+    const recordset = await pool.query(queryString)
+
+    if (recordset.rowCount > 0) {
+      // send records as a response
+      return res.status(200).json(recordset.rows)
+
+    } else {
+      return res.status(404).json({ 'message': 'failed' })
+    }
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+  }
+
+}
+
+
+//GET module by ID
+async function getModuleByID(req, res, error) {
+
+  const moduleID = req.params.id;
+  const pool = await db.dbConnection()
+
+
+  const queryString = `select * FROM public.modules WHERE id='${moduleID}' and isactive = 'true'`
+
+  try {
+
+    pool.query(queryString, function (error, recordset) {
+
+      if (recordset.rows.length > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
+      } else {
+        return res.status(404).json('record not found')
+      }
+    });
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+}
+
+
+//GET module transaction by module ID
+async function getModuleTransactionsByModuleID(req, res, error) {
+
+  var moduleTransArray = []
+  var moduleTransObject = {}
+
+  var moduletransaction = []
+  var transactionstages = []
+
+
+  const moduleID = req.params.id;
+  const pool = await db.dbConnection()
+
+
+  const queryString = `select id, description FROM public.moduletransactions WHERE moduleid='${moduleID}' and isactive = 'true'`
+
+  try {
+
+    const modTrans = await pool.query(queryString)
+
+    if (modTrans.rowCount > 0) {
+
+      for (var i = 0; i < modTrans.rowCount; i++) {
+
+        var modTransID = modTrans.rows[i].id
+        //var modTransDesc = modTrans.rows[i].description
+        moduletransaction.push(modTrans.rows[i].description)
+
+        console.log(modTrans.rows[i])
+        transactionstages.push (modTrans.rows[i],(await getModuleTransStages(modTransID)))
+       
+      }
+    
+      return res.status(200).json(transactionstages)
+
+    } else {
+
+      return res.status(404).json('record not found')
+    }
+
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+}
+
+
+//GET module transaction Stages by module Trans ID
+async function getTransactionStagesByModuleTransID(req, res, error) {
+
+  var moduleTrans = {}
+  const moduleTransID = req.params.id;
+  const pool = await db.dbConnection()
+
+
+  const queryString = `select * FROM public.transactionstages WHERE moduleid='${moduleTransID}'`
+
+  try {
+
+    pool.query(queryString, function (err, recordset) {
+
+      if (recordset.rows.length > 0) {
+        // send records as a response
+        return res.status(200).json(recordset.rows)
+      } else {
+        return res.status(404).json('record not found')
+      }
+    });
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+}
+
+
+//Function to return transaction stages by nodtransid
+async function getModuleTransStages(modtransID) {
+
+  const queryString = `select id, description, code, url, iconid, module_transaction_id from public.transactionstages WHERE module_transaction_id='${modtransID}' and isactive ='true'`
+
+  const pool = await db.dbConnection()
+
+  try {
+
+    const recordset = await pool.query(queryString)
+
+    if (recordset.rowCount > 0) {
+      // send records as a response
+      return recordset.rows
+
+    } 
+
+  } catch (error) {
+    return helper.parseError(error, queryString)
+  }
+
+}
+
+
 
 module.exports = {
   getPaymentModes,
@@ -1050,6 +1204,10 @@ module.exports = {
   getItemBaseUnits,
   getItemBaseUnitByID,
   createItemBaseUnit,
-  updateItemBaseUnit
+  updateItemBaseUnit,
+  getModuleTransactionsByModuleID,
+  getModules,
+  getModuleByID,
+  getTransactionStagesByModuleTransID
 
 }

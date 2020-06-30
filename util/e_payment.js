@@ -8,7 +8,11 @@ const helper = require('../util/helper');
 var os = require('os');
 
 
-
+const apiValues=[
+  apiUrl,
+  apiMethod,
+  reqBody
+]
 
 var postheaders = {
     'Content-Type' : 'application/json',
@@ -18,23 +22,15 @@ var postheaders = {
     'Ocp-Apim-Subscription-Key': '972b11ebf863417ca8692d2cee3936de'
 };
 
+
 const requestOptions = {
     headers: postheaders,
-    url: 'https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay',
-    method: 'POST',
+    url: `'${apiUrl}'`,
+    method: `'${apiMethod}'`,
     json: {},
-    body: JSON.stringify({
-        "amount":"" ,
-        "currency": "EUR",
-        "externalId": "string", 
-        "payer": {
-          "string":"",
-          "partyId": "string"
-        }, 
-        "payerMessage": "wigal",
-        "payeeNote": "MTN"
-    })
+    body: JSON.stringify({reqBody})
   };
+
   request(requestOptions, (err, res, body) => {
     if (err) {
       console.log(err);

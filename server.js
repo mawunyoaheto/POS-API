@@ -66,7 +66,6 @@ app.use(cors());
 app.use(compression());
 
 
-
 //Users
 app.use('/', routes);
 app.use('/',product_routes);
@@ -128,6 +127,18 @@ app.use('/e-payment/:id',operations_routes);
 //ItemBaseUnits
 app.use('/itembaseunit',operations_routes);
 app.use('/itembaseunit/:id',operations_routes);
+
+//Modules
+app.use('/modules',operations_routes);
+app.use('/modules/:id',operations_routes);
+
+//Module Transactions
+app.use('/moduletrans',operations_routes);
+app.use('/moduletrans/:id',operations_routes);
+
+//Transaction Stages
+app.use('/transtages',operations_routes);
+app.use('/transtages/:id',operations_routes);
 
 // catch 404 and forward to error handler
 app.use((err, req, res, next) => {

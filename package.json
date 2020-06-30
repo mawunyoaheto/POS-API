@@ -1,6 +1,9 @@
 {
   "name": "pos",
   "version": "1.0.0",
+  "engines": {
+    "node": "v12.16.1"
+  },
   "description": "Point Of Sale",
   "main": "server.js",
   "scripts": {

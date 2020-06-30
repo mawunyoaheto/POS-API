@@ -37,6 +37,36 @@ router.get('/orders',ordersController.getOrdersSummary);
 
 /**
  * @swagger
+ * path:
+ *   /orders/{invoiceNo}:
+ *     get:
+ *       summary: Returns orders by invoiceNo
+ *       tags: [Purchase Orders]
+ *       parameters:
+ *         - in: path
+ *           name: invoiceNo
+ *           required: true
+ *           description: invoiceNo of order to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified invoiceNo is invalid (not a number).
+ *         '404':
+ *           description: An order with the specified invoiceNo was not found.
+ *         default:
+ *           description: Unexpected error
+ */
+router.get('/orders/:invoiceNo',ordersController.getOrdersSummary);
+
+/**
+ * @swagger
  *
  * /orders:
  *   post:
