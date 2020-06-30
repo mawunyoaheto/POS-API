@@ -79,11 +79,12 @@ async function getOrderStatusByID(req, res) {
 
 }
 
-
 //GET OUTLETS
 async function getOrdersSummary(req, res, error) {
 
-  const queryString = `SELECT * FROM public.orders WHERE archived = false `
+  var orders = {}
+  const invoiceNo = req.params.invoiceNo
+  const queryString = `SELECT * FROM public.orders WHERE archived = false and invoiceno= '${invoiceNo}'`
   const pool = await db.dbConnection()
 
   try {
@@ -92,8 +93,10 @@ async function getOrdersSummary(req, res, error) {
 
     if (row_count.rowCount > 0) {
 
-      // send records as a response
-      return res.status(200).json(row_count.rows)
+      orders.summary = row_count.rows[0]
+      orders.summary.details = await getOrderDetails(row_count.rows[0].id)
+
+      return res.status(200).json(orders)
 
     } else {
       return res.status(404).json({ 'message': 'failed with no records found' })
@@ -106,7 +109,6 @@ async function getOrdersSummary(req, res, error) {
   }
 
 }
-
 
 //CREATE PURCHASE ORDER
 async function createOrder(req, res, err) {
@@ -189,7 +191,51 @@ async function createOrder(req, res, err) {
   }
 }
 
+async function getOrderDetails(orderID) {
 
+  const queryString = `select * from public.orderlines WHERE orderid='${orderID}'`
+  const pool = await db.dbConnection()
+
+  try {
+
+   const recordset = await  pool.query(queryString) 
+
+        if (recordset.rowCount > 0) {
+          // send records as a response
+          return recordset.rows
+
+        } else {
+          return res.status(404).json({ 'message': 'failed' })
+        }
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+  }
+
+}
+
+async function getPendingOrderApprovalDetails(orderID) {
+
+  const queryString = `select * from public.orderlines WHERE orderid='${orderID}' and stageid =10 `
+  const pool = await db.dbConnection()
+
+  try {
+
+   const recordset = await  pool.query(queryString) 
+
+        if (recordset.rowCount > 0) {
+          // send records as a response
+          return recordset.rows
+
+        } else {
+          return res.status(404).json({ 'message': 'failed' })
+        }
+
+  } catch (error) {
+    return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+  }
+
+}
 
 async function createOrderReceival(req, res, err) {
 
@@ -267,10 +313,123 @@ async function createOrderReceival(req, res, err) {
 
 }
 
+//APPROVE PURCHASE ORDER
+async function approveOrder(req, res, err) {
+
+  const pool = await db.dbConnection()
+
+  const approveOrderQuery = `INSERT INTO public.orderapprovals(purchaseorderid, approverid, approvalnumber, outletid, remark, 
+    approvallevelid, approvaldate,servertime, createtime, createuserid, usermachinename, usermachineip)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning id`;
+
+  const approvalLinesQuery = `INSERT INTO public.orderapprovallines(purchaseorderlineid, productid, unitcost, approvedqty, 
+    productunitid, reorderlevel, stocklevel, remarks, outletid, baseitemid, createtime, approvalid, createuserid, servertime, 
+    usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning *`;
+
+
+  //let totalValue = helper.sumOfArrayWithParameter(req.body.orderdetails, 'unitCost');
+
+ // console.log(totalValue)
+
+  const orderApprovalValues = [
+    req.body.purchaseOrderID,
+    req.body.approverId,
+    req.body.approvalNo,
+    outletID = req.body.outletID,
+    req.body.remark,
+    req.body.approvalLevelId,
+    req.body.approvalDate,
+    moment(new Date()),
+    moment(new Date()),
+    req.body.create_userid,
+    userMachineName,
+    userMachineIP
+  ];
+
+  try {
+
+    
+
+    await pool.query('BEGIN')
+
+   const records = await pool.query(approveOrderQuery, orderApprovalValues)
+
+    purchaseOrderLineID = records.rows[0].id
+
+        for (var i = 0; i < req.body.orderdetails.length; ++i) {
+  
+          var orderApprovalLinesvalues = [
+            purchaseOrderLineID,
+            req.body.orderdetails[i].productID,
+            req.body.orderdetails[i].unitCost,
+            req.body.orderdetails[i].approvedtQty,
+            req.body.orderdetails[i].productUnitID,
+            req.body.orderdetails[i].reOrderLevel,
+            req.body.orderdetails[i].stockLevel,
+            req.body.orderdetails[i].remarks,
+            outletID,
+            req.body.orderdetails[i].baseItemID,
+            moment(new Date()),
+            req.body.orderdetails[i].approvalID,
+            req.body.orderdetails[i].create_userid,
+            moment(new Date()),
+            userMachineName,
+            userMachineIP
+          ];
+
+          await pool.query(approvalLinesQuery, orderApprovalLinesvalues) 
+
+  } 
+
+  await pool.query('COMMIT')
+  res.status(201).json({ 'message': 'success' });
+
+}
+  catch (error) {
+    await pool.query('ROLLBACK')
+    res.status(402).json('record insert failed with error: ' + helper.parseError(error, approveOrderQuery))
+     
+  }
+}
+
+//GET ORDERS PENDING APPROVAL
+async function getPendingOrdersSummary(req, res, error) {
+
+  var orders = {}
+  //const invoiceNo = req.params.invoiceNo
+  //const queryString = `SELECT * FROM public.orders WHERE archived = false and invoiceno= '${invoiceNo}'and stageid= 10`
+  const queryString = `SELECT * FROM public.orders WHERE archived = 'false' and stageid= 10`
+  const pool = await db.dbConnection()
+
+  try {
+
+    const row_count = await pool.query(queryString)
+
+    if (row_count.rowCount > 0) {
+
+      orders.summary = row_count.rows[0]
+      orders.summary.details = await getPendingOrderApprovalDetails(row_count.rows[0].id)
+
+      return res.status(200).json(orders)
+
+    } else {
+      return res.status(404).json({ 'message': 'failed with no records found' })
+    }
+
+  } catch (error) {
+
+    return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+
+}
+
 module.exports = {
   getOrderStatus,
   getOrderStatusByID,
   createOrder,
   createOrderReceival,
-  getOrdersSummary
+  getOrdersSummary,
+  approveOrder,
+  getPendingOrdersSummary
 }

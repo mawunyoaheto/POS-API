@@ -114,7 +114,9 @@ app.use('/supplier/:id',operations_routes);
 
 //ORDERS
 app.use('/orders',orders_routes);
+app.use('/pendingorders',orders_routes);
 app.use('/orderreceival',orders_routes);
+
 
 //Supplier
 app.use('/orderstatus',orders_routes);

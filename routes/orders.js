@@ -141,6 +141,27 @@ router.get('/orders/:invoiceNo',ordersController.getOrdersSummary);
  *         description: Unexpected error
  */
 router.post('/orders',ordersController.createOrder);
+
+
+/**
+ * @swagger
+ * /pendingorders:
+ *  get:
+ *    summary: Returns all Pending Purchase Orders
+ *    tags: [Purchase Orders]
+ *    description: Get all Pending Purchase Orders for Approval
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No records found
+ *      '400':
+ *        description: Unexpected error
+ */
+
+router.get('/pendingorders',ordersController.getPendingOrdersSummary);
+
+
 router.post('/orderreceival',ordersController.createOrderReceival);
 
 

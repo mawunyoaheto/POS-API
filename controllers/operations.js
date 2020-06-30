@@ -1080,11 +1080,8 @@ async function getModuleByID(req, res, error) {
 //GET module transaction by module ID
 async function getModuleTransactionsByModuleID(req, res, error) {
 
-  var moduleTransArray = []
-  var moduleTransObject = {}
-
-  var moduletransaction = []
   var transactionstages = []
+  var stages =[]
 
 
   const moduleID = req.params.id;
@@ -1102,14 +1099,21 @@ async function getModuleTransactionsByModuleID(req, res, error) {
       for (var i = 0; i < modTrans.rowCount; i++) {
 
         var modTransID = modTrans.rows[i].id
-        //var modTransDesc = modTrans.rows[i].description
-        moduletransaction.push(modTrans.rows[i].description)
+        var modTransDesc = modTrans.rows[i].description
 
         console.log(modTrans.rows[i])
-        transactionstages.push (modTrans.rows[i],(await getModuleTransStages(modTransID)))
+        stages = await getModuleTransStages(modTransID)
+        
+        var transaction ={
+          id: modTransID,
+          description: modTransDesc,
+          stages: stages
+        }
+        
+        transactionstages.push(transaction)
        
       }
-    
+       //transactionstages.stages=stages
       return res.status(200).json(transactionstages)
 
     } else {
