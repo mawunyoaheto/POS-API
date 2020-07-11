@@ -161,6 +161,36 @@ router.post('/orders',ordersController.createOrder);
 
 router.get('/pendingorders',ordersController.getPendingOrdersSummary);
 
+/**
+ * @swagger
+ * path:
+ *   /pendingorders/{invoiceNo}:
+ *     get:
+ *       summary: Returns Pending orders for approval by invoiceNo
+ *       tags: [Purchase Orders]
+ *       parameters:
+ *         - in: path
+ *           name: invoiceNo
+ *           required: true
+ *           description: invoiceNo of pending order approval to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified invoiceNo is invalid (not a number).
+ *         '404':
+ *           description: An order with the specified invoiceNo was not found.
+ *         default:
+ *           description: Unexpected error
+ */
+router.get('/pendingorders/:invoiceNo',ordersController.getPendingOrdersSummaryByInvoice);
+
 
 router.post('/orderreceival',ordersController.createOrderReceival);
 

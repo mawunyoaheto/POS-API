@@ -395,7 +395,6 @@ async function approveOrder(req, res, err) {
 //GET ORDERS PENDING APPROVAL
 async function getPendingOrdersSummary(req, res, error) {
 
-  var orders = {}
   //const invoiceNo = req.params.invoiceNo
   //const queryString = `SELECT * FROM public.orders WHERE archived = false and invoiceno= '${invoiceNo}'and stageid= 10`
   const queryString = `SELECT * FROM public.orders WHERE archived = 'false' and stageid= 10`
@@ -407,12 +406,69 @@ async function getPendingOrdersSummary(req, res, error) {
 
     if (row_count.rowCount > 0) {
 
-      orders.summary = row_count.rows[0]
-      orders.summary.details = await getPendingOrderApprovalDetails(row_count.rows[0].id)
+      var orderSummary ={}
+      // var orderID = row_count.rows[0].id
+      // var orderSummary = row_count.rows[0]
 
-      return res.status(200).json(orders)
+      // orderSummary.details = await getPendingOrderApprovalDetails(orderID)
+      var pendingOrders = []
+       // var details =[]
+
+      for (var i = 0; i < row_count.rowCount; i++ ){
+
+        var orderID = row_count.rows[i].id
+        orderSummary = row_count.rows[i]
+
+        orderSummary.details = await getPendingOrderApprovalDetails(orderID)
+
+        // var ordertransaction ={
+        //   summary: orderSummary,
+        //   details: details
+        // }
+        //pendingOrders.push(ordertransaction)
+        pendingOrders.push(orderSummary)
+
+      }
+      
+      return res.status(200).json(pendingOrders)
 
     } else {
+
+      return res.status(404).json({ 'message': 'failed with no records found' })
+    }
+
+  } catch (error) {
+
+    return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
+
+  }
+
+}
+
+//GET ORDERS PENDING APPROVAL BY INVOICE NO
+async function getPendingOrdersSummaryByInvoice(req, res, error) {
+
+  const invoiceNo = req.params.invoiceNo
+  const queryString = `SELECT * FROM public.orders WHERE archived = false and invoiceno= '${invoiceNo}'and stageid= 10`
+
+  const pool = await db.dbConnection()
+
+  try {
+
+    const row_count = await pool.query(queryString)
+
+    if (row_count.rowCount > 0) {
+     
+      var orderSummary ={}
+        var orderID = row_count.rows[0].id
+        var orderSummary = row_count.rows[0]
+
+        orderSummary.details = await getPendingOrderApprovalDetails(orderID)
+
+      return res.status(200).json(orderSummary)
+
+    } else {
+
       return res.status(404).json({ 'message': 'failed with no records found' })
     }
 
@@ -431,5 +487,6 @@ module.exports = {
   createOrderReceival,
   getOrdersSummary,
   approveOrder,
-  getPendingOrdersSummary
+  getPendingOrdersSummary,
+  getPendingOrdersSummaryByInvoice
 }

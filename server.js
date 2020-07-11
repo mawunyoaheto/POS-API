@@ -14,6 +14,12 @@ const winston = require('./util/winston')
 const routes = require("./routes/users");
 const product_routes = require("./routes/products");
 const operations_routes = require("./routes/operations");
+const outlet_routes = require("./routes/outlets");
+const suppliers_routes = require("./routes/suppliers");
+const tax_routes = require("./routes/tax");
+const moduletranstages_routes = require("./routes/modules_trans_stages");
+const paymentmodes_routes = require("./routes/payment_modes");
+const epayments_routes = require("./routes/e-payments");
 const orders_routes = require("./routes/orders");
 
 //prevent DDOS by limiting the rate of request
@@ -67,10 +73,16 @@ app.use(compression());
 
 
 //Users
-app.use('/', routes);
+app.use('/',routes);
 app.use('/',product_routes);
 app.use('/',operations_routes);
 app.use('/',orders_routes);
+app.use('/',outlet_routes);
+app.use('/',suppliers_routes);
+app.use('/',tax_routes);
+app.use('/',moduletranstages_routes);
+app.use('/',paymentmodes_routes);
+app.use('/',epayments_routes);
 app.use('/usercategories', routes);
 app.use('/add-user',routes);
 app.use('/users',routes);
@@ -96,25 +108,26 @@ app.use('*',product_routes);
 //OPERATIONS 
 
 //Payment Modes
-app.use('/payment-mode',operations_routes);
-app.use('/payment-mode/:id',operations_routes);
+app.use('/payment-mode',paymentmodes_routes);
+app.use('/payment-mode/:id',paymentmodes_routes);
 
 //Outlet
-app.use('/outlet',operations_routes);
-app.use('/outlet/:id',operations_routes);
+app.use('/outlet',outlet_routes);
+app.use('/outlet/:id',outlet_routes);
 
 //Tax
-app.use('/tax',operations_routes);
-app.use('/tax/:id',operations_routes);
+app.use('/tax',tax_routes);
+app.use('/tax/:id',tax_routes);
 
 //Supplier
-app.use('/supplier',operations_routes);
-app.use('/supplier/:id',operations_routes);
+app.use('/supplier',suppliers_routes);
+app.use('/supplier/:id',suppliers_routes);
 
 
 //ORDERS
 app.use('/orders',orders_routes);
 app.use('/pendingorders',orders_routes);
+app.use('/pendingorders/:invoiceNo',orders_routes);
 app.use('/orderreceival',orders_routes);
 
 
@@ -123,24 +136,24 @@ app.use('/orderstatus',orders_routes);
 app.use('/orderstatus/:id',orders_routes);
 
 //E-Payment API setup
-app.use('/e-payment',operations_routes);
-app.use('/e-payment/:id',operations_routes);
+app.use('/e-payment',epayments_routes);
+app.use('/e-payment/:id',epayments_routes);
 
 //ItemBaseUnits
 app.use('/itembaseunit',operations_routes);
 app.use('/itembaseunit/:id',operations_routes);
 
 //Modules
-app.use('/modules',operations_routes);
-app.use('/modules/:id',operations_routes);
+app.use('/modules',moduletranstages_routes);
+app.use('/modules/:id',moduletranstages_routes);
 
 //Module Transactions
-app.use('/moduletrans',operations_routes);
-app.use('/moduletrans/:id',operations_routes);
+app.use('/moduletrans',moduletranstages_routes);
+app.use('/moduletrans/:id',moduletranstages_routes);
 
 //Transaction Stages
-app.use('/transtages',operations_routes);
-app.use('/transtages/:id',operations_routes);
+app.use('/transtages',moduletranstages_routes);
+app.use('/transtages/:id',moduletranstages_routes);
 
 // catch 404 and forward to error handler
 app.use((err, req, res, next) => {
