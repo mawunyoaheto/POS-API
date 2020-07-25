@@ -10,17 +10,18 @@ var http = require('http');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const config = require('./config');
-const winston = require('./util/winston')
-const routes = require("./routes/users");
-const product_routes = require("./routes/products");
-const operations_routes = require("./routes/operations");
-const outlet_routes = require("./routes/outlets");
-const suppliers_routes = require("./routes/suppliers");
-const tax_routes = require("./routes/tax");
-const moduletranstages_routes = require("./routes/modules_trans_stages");
-const paymentmodes_routes = require("./routes/payment_modes");
-const epayments_routes = require("./routes/e-payments");
-const orders_routes = require("./routes/orders");
+const winston = require('./api/v1/util/winston')
+const routes = require("./api/v1/routes/users");
+const product_routes = require("./api/v1/routes/products");
+const operations_routes = require("./api/v1/routes/operations");
+const outlet_routes = require("./api/v1/routes/outlets");
+const suppliers_routes = require("./api/v1/routes/suppliers");
+const tax_routes = require("./api/v1/routes/tax");
+const moduletranstages_routes = require("./api/v1/routes/modules_trans_stages");
+const paymentmodes_routes = require("./api/v1/routes/payment_modes");
+const itembaseunit_routes = require("./api/v1/routes/itembaseunit");
+const epayments_routes = require("./api/v1/routes/e-payments");
+const orders_routes = require("./api/v1/routes/orders");
 
 //prevent DDOS by limiting the rate of request
 
@@ -83,6 +84,7 @@ app.use('/',tax_routes);
 app.use('/',moduletranstages_routes);
 app.use('/',paymentmodes_routes);
 app.use('/',epayments_routes);
+app.use('/',itembaseunit_routes);
 app.use('/usercategories', routes);
 app.use('/add-user',routes);
 app.use('/users',routes);
@@ -140,8 +142,8 @@ app.use('/e-payment',epayments_routes);
 app.use('/e-payment/:id',epayments_routes);
 
 //ItemBaseUnits
-app.use('/itembaseunit',operations_routes);
-app.use('/itembaseunit/:id',operations_routes);
+app.use('/itembaseunit',itembaseunit_routes);
+app.use('/itembaseunit/:id',itembaseunit_routes);
 
 //Modules
 app.use('/modules',moduletranstages_routes);

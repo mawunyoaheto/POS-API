@@ -1,7 +1,0 @@
-{"message":"::1 - - [25/Apr/2020:13:56:18 +0000] \"PUT /products/bc10a087-6d67-4949-87c6-87fec735c2b9 HTTP/1.1\" 201 54 \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 02:56:18 PM +0100"}
-{"message":"::1 - - [25/Apr/2020:13:57:27 +0000] \"PUT /productcategory/7b052a76-c876-4d3d-810a-e84e6a1f5de6 HTTP/1.1\" 404 - \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 02:57:27 PM +0100"}
-{"message":"::1 - - [25/Apr/2020:13:58:28 +0000] \"PUT /productcategory/7b052a76-c876-4d3d-810a-e84e6a1f5de6 HTTP/1.1\" 404 - \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 02:58:28 PM +0100"}
-{"message":"::1 - - [25/Apr/2020:13:58:42 +0000] \"PUT /productcategory/7b052a76-c876-4d3d-810a-e84e6a1f5de HTTP/1.1\" 404 - \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 02:58:42 PM +0100"}
-{"message":"::1 - - [25/Apr/2020:13:59:56 +0000] \"PUT /product-category/7b052a76-c876-4d3d-810a-e84e6a1f5de HTTP/1.1\" 404 63 \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 02:59:56 PM +0100"}
-{"message":"::1 - - [25/Apr/2020:14:01:28 +0000] \"PUT /product-category/7b052a76-c876-4d3d-810a-e84e6a1f5de6 HTTP/1.1\" 201 63 \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info","timestamp":"2020-04-25 03:01:28 PM +0100"}
-{"message":"::ffff:127.0.0.1 - - [25/Apr/2020:21:07:25 +0000] \"GET /usertypes HTTP/1.1\" 200 641 \"-\" \"vscode-restclient\"\n","level":"info","timestamp":"2020-04-25 10:07:25 PM +0100"}

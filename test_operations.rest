@@ -55,7 +55,7 @@ POST http://localhost:5002/tax/
 Content-Type: application/json
 
 {
-	"description":"VAT",
+	"description":"TEST-VAT",
     "percentage":"3.00",
     "userid":"265d16da-b154-40a0-9e59-9dea6a628f4e",
     "isactive":"true"
