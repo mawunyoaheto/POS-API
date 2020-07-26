@@ -21,7 +21,7 @@ router.get('/',detailsController.home_page);
 /**
  * @swagger
  * path:
- *   /users/{id}:
+ *   /users/user/{id}:
  *     get:
  *       summary: Returns a User by id
  *       tags: [Users]
@@ -46,11 +46,11 @@ router.get('/',detailsController.home_page);
  *         default:
  *           description: Unexpected error
  */
-router.get('/users/:id',usersController.getUserByID);
+router.get('/users/user/:id',usersController.getUserByID);
 
 /**
  * @swagger
- * /users:
+ * /users/allusers:
  *  get:
  *    summary: Returns all Users
  *    tags: [Users]
@@ -63,12 +63,12 @@ router.get('/users/:id',usersController.getUserByID);
  *      '400':
  *        description: Unexpected error
  */
-router.get('/users',usersController.getAllUsers);
+router.get('/users/allusers',usersController.getAllUsers);
 
 /**
  * @swagger
  *
- * /users:
+ * /users/createuser:
  *   post:
  *     summary: Add a User
  *     tags: [Users]
@@ -110,12 +110,12 @@ router.get('/users',usersController.getAllUsers);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/users',usersController.createUser);
+router.post('/users/createuser',usersController.createUser);
 
 /**
  * @swagger
  *
- * /users/{id}:
+ * /users/updateuser/{id}:
  *   put:
  *     summary: Update a User
  *     tags: [Users]
@@ -164,10 +164,12 @@ router.post('/users',usersController.createUser);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/users/:id',usersController.updateUser);
+router.put('/users/updateuser/:id',usersController.updateUser);
 
 // User Login
-router.post('/login',usersController.login);
+
+router.get('/users/login',usersController.login);
+router.get('/users/register',usersController.register);
 
 //User Categories route
 

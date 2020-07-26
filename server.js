@@ -8,7 +8,11 @@ var compression = require('compression');
 var morgan = require('morgan');
 var http = require('http');
 const swaggerJsDoc = require('swagger-jsdoc');
+const session = require('express-session');
+const flash = require('express-flash');
 const swaggerUi = require('swagger-ui-express');
+const passport = require('passport');
+const initializePassport = require('./api/v1/util/passportconfig')
 const config = require('./config');
 const winston = require('./api/v1/util/winston')
 const routes = require("./api/v1/routes/users");
@@ -22,6 +26,8 @@ const paymentmodes_routes = require("./api/v1/routes/payment_modes");
 const itembaseunit_routes = require("./api/v1/routes/itembaseunit");
 const epayments_routes = require("./api/v1/routes/e-payments");
 const orders_routes = require("./api/v1/routes/orders");
+const login_route = require('./api/v1/routes/login')
+
 
 //prevent DDOS by limiting the rate of request
 
@@ -44,7 +50,8 @@ const swaggerOptions = {
       servers: ["http://localhost:5002"]
     }
   },
-    apis: ['./routes/*.js']
+    //apis: ['./routes/*.js']
+    apis: ['./api/v1/routes/*.js']
 
 }
 
@@ -52,6 +59,21 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //app.set('trust proxy');
+
+initializePassport(passport)
+
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false
+})
+);
+
+app.set('view engine', 'ejs');
+
+app.use(passport.initialize())
+app.use(passport.session());
+app.use(flash())
 app.use(helmet());
 app.use(limiter)
 app.use(function(req, res, next) {
@@ -85,18 +107,24 @@ app.use('/',moduletranstages_routes);
 app.use('/',paymentmodes_routes);
 app.use('/',epayments_routes);
 app.use('/',itembaseunit_routes);
+app.use('/',login_route);
 app.use('/usercategories', routes);
-app.use('/add-user',routes);
-app.use('/users',routes);
-app.use('/users/:id',routes);
-app.use('/deleteuser/:id',routes)
+app.use('/users/login',routes);
+app.use('/users/add-user',routes);
+app.use('/users/createuser',routes);
+//app.use('/users/:id',routes);
+app.use('/users/deleteuser/:id',routes)
 app.use('/usercategory',routes);
 app.use('/usercategory/:id',routes);
 app.use('/usertypes',routes); 
 app.use('/usertypes/:id',routes); 
 app.use('/useroutlets/:id',routes); 
-app.use('/login',routes);
+
 app.use('*',routes);
+
+//Login
+//app.use('/users/login',login_route);
+app.use('/dashboard',login_route)
 
 //Products
 

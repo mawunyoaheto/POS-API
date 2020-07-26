@@ -1,20 +1,22 @@
 "use strict";
 
 const assert = require("assert");
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config();
 
 
 // read in the .env file
-dotenv.config();
+//dotenv.config();
 
 
 // capture the environment variables the application needs
 
 const {
+    NODE_ENV,
     PORT,
     DB_PORT,
     HOST,
     HOST_URL,
+    DB_URL,
     DB_HOST,
     DB_NAME,
     DB_USER,
@@ -25,9 +27,11 @@ const {
 } = process.env;
 
 module.exports = {
+    node_env:NODE_ENV,
     port: PORT,
     host: HOST,
     url: HOST_URL,
+    db_url:DB_URL,
     database: DB_NAME,
     user: DB_USER,
     password: DB_PASSWORD,

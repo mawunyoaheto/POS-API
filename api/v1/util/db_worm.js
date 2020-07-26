@@ -2,27 +2,19 @@ const { Pool, Client } = require('pg');
 var dbConfig = require('../../../config');
 var winston = require('../util/winston');
 
-// your credentials
+//check if u are in production mode
+const isProduction = dbConfig.node_env === "production"
 
-// console.log('Host',dbConfig.db_host)
-// console.log('Port',dbConfig.db_port)
-// console.log('User',dbConfig.user)
-// console.log('Password',dbConfig.password)
-// console.log('Database',dbConfig.database)
+const connectionString = `postgresql://${dbConfig.user}:${dbConfig.password}@${dbConfig.db_host}:${dbConfig.db_port}/${dbConfig.database}`
 
 const pool = new Pool({
-  //connectionString: DATABASE_URL
-  "host":`${dbConfig.db_host}`,
-  "port":`${dbConfig.db_port}`,
-  "user":`${dbConfig.user}`,
-  "password":`${dbConfig.password}`,
-  "database":`${dbConfig.database}`
+  connectionString: isProduction? dbConfig.db_url:connectionString
+  // "host":`${dbConfig.db_host}`,
+  // "port":`${dbConfig.db_port}`,
+  // "user":`${dbConfig.user}`,
+  // "password":`${dbConfig.password}`,
+  // "database":`${dbConfig.database}`
 });
-
-// pool.query('select Now()', (err, res)=> {
-//   console.log(err,res)
-//   pool.end()
-// })
 
 
 pool.connect(function (err) {
