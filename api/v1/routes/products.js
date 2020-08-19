@@ -14,132 +14,18 @@ const genToken = require('../util/generateToken');
  */
 
 
-router.get('/',detailsController.home_page);
-
-
-//product Catgeories routes
-/**
- * @swagger
- * /product-category:
- *  get:
- *    summary: Returns all Product Categories
- *    tags: [Product Category]
- *    description: Get all Product Categories
- *    responses:
- *      '200':
- *        description: OK
- *      '404':
- *        description: No records found
- *      '400':
- *        description: Unexpected error
- */
-router.get('/product-category',productsController.getProductCategories);
-
-/**
- * @swagger
- * path:
- *   /product-category/{id}:
- *     get:
- *       summary: Returns a Product Category by id
- *       tags: [Product Category]
- *       parameters:
- *         - in: path
- *           name: id
- *           required: true
- *           description: id of PaymentMode to return
- *           schema:
- *             type: integer
- *       responses:
- *         '200':
- *           description: OK
- *           content:
- *             application/json:
- *               schema:
- *                 type: object
- *         '400':
- *           description: The specified Product Category ID is invalid (not a number).
- *         '404':
- *           description: A Product Category with the specified ID was not found.
- *         default:
- *           description: Unexpected error
- */
-router.get('/product-category/:id',productsController.getProductCategoryID);
-
-/**
- * @swagger
- *
- * /product-category:
- *   post:
- *     summary: Add a Product Category
- *     tags: [Product Category]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               category:
- *                 type: string
- *               isactive:
- *                 type: boolean
- *               userId:
- *                 type: integer
- *     responses:
- *       '201':
- *         description: created
- *       '400':
- *         description: Unexpected error
- */
-router.post('/product-category',productsController.createPoductCategory);
-
-/**
- * @swagger
- * path:
- *   /product-category/{id}:
- *     put:
- *       summary: Updates a Product Category by id
- *       tags: [Product Category]
- *       parameters:
- *         - in: path
- *           name: id
- *           required: true
- *           description: id of Supplier to update
- *           schema:
- *             type: integer
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 category:
- *                   type: string
- *                 isactive:
- *                   type: boolean
- *                 userId:
- *                   type: integer
- *       responses:
- *         '201':
- *           description: updated
- *         '404':
- *           description: A Product Category with the specified ID was not found.
- *         default:
- *           description: Unexpected error
- */
-router.put('/product-category/:id',productsController.updateProductCategory);
+//router.get('/',detailsController.home_page);
 
 
 //products routes
 
 /**
  * @swagger
- * /products:
+ * /products/products:
  *  get:
- *    summary: Returns all Product Categories
+ *    summary: Returns all products
  *    tags: [Products]
- *    description: Get all Product Categories
+ *    description: Get all products
  *    responses:
  *      '200':
  *        description: OK
@@ -153,15 +39,15 @@ router.get('/products',productsController.getProducts);
 /**
  * @swagger
  * path:
- *   /products/{id}:
+ *   /products/get-product/{id}:
  *     get:
- *       summary: Returns a Product by id
+ *       summary: Returns a product by id
  *       tags: [Products]
  *       parameters:
- *         - in: path
- *           name: id
+ *         - in: query
+ *           name: productid
  *           required: true
- *           description: id of PaymentMode to return
+ *           description: id of product to return
  *           schema:
  *             type: integer
  *       responses:
@@ -178,14 +64,14 @@ router.get('/products',productsController.getProducts);
  *         default:
  *           description: Unexpected error
  */
-router.get('/products/:id',productsController.getProductByID);
+router.get('/get-product/:id',productsController.getProductByID);
 
 /**
  * @swagger
  *
- * /products:
+ * /products/add-product:
  *   post:
- *     summary: Add a Product
+ *     summary: Add a new product
  *     tags: [Products]
  *     requestBody:
  *       required: true
@@ -216,20 +102,20 @@ router.get('/products/:id',productsController.getProductByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/products',productsController.createPoduct);
+router.post('/add-product',productsController.createPoduct);
 
 /**
  * @swagger
  * path:
- *   /products/{id}:
+ *   /products/update-product/{id}:
  *     put:
- *       summary: Updates a Product by id
+ *       summary: Updates a product by id
  *       tags: [Products]
  *       parameters:
  *         - in: path
  *           name: id
  *           required: true
- *           description: id of Supplier to update
+ *           description: id of product to update
  *           schema:
  *             type: integer
  *       requestBody:
@@ -261,7 +147,121 @@ router.post('/products',productsController.createPoduct);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/products/:id',productsController.updateProduct);
+router.put('/update-product/:id',productsController.updateProduct);
+
+
+//product Catgeories routes
+/**
+ * @swagger
+ * /products/get-category:
+ *  get:
+ *    summary: Returns all Product Categories
+ *    tags: [Product Category]
+ *    description: Get all Product Categories
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No records found
+ *      '400':
+ *        description: Unexpected error
+ */
+router.get('/get-category',productsController.getProductCategories);
+
+/**
+ * @swagger
+ * path:
+ *   /products/get-category/{id}:
+ *     get:
+ *       summary: Returns a product category by id
+ *       tags: [Product Category]
+ *       parameters:
+ *         - in: query
+ *           name: catid
+ *           required: true
+ *           description: id of product category to return
+ *           schema:
+ *             type: integer
+ *       responses:
+ *         '200':
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *         '400':
+ *           description: The specified Product Category ID is invalid (not a number).
+ *         '404':
+ *           description: A Product Category with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
+router.get('/get-category/:id',productsController.getProductCategoryID);
+
+/**
+ * @swagger
+ *
+ * /products/add-category:
+ *   post:
+ *     summary: Add a product category
+ *     tags: [Product Category]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               category:
+ *                 type: string
+ *               isactive:
+ *                 type: boolean
+ *               userId:
+ *                 type: integer
+ *     responses:
+ *       '201':
+ *         description: created
+ *       '400':
+ *         description: Unexpected error
+ */
+router.post('/add-category',productsController.createPoductCategory);
+
+/**
+ * @swagger
+ * path:
+ *   /products/update-category/{id}:
+ *     put:
+ *       summary: Updates a product category by id
+ *       tags: [Product Category]
+ *       parameters:
+ *         - in: query
+ *           name: catid
+ *           required: true
+ *           description: id of product category to update
+ *           schema:
+ *             type: integer
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 category:
+ *                   type: string
+ *                 isactive:
+ *                   type: boolean
+ *                 userId:
+ *                   type: integer
+ *       responses:
+ *         '201':
+ *           description: updated
+ *         '404':
+ *           description: A Product Category with the specified ID was not found.
+ *         default:
+ *           description: Unexpected error
+ */
+router.put('/update-category/:id',productsController.updateProductCategory);
 
 
 

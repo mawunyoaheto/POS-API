@@ -4,6 +4,7 @@ var router = express.Router();
 const detailsController = require('../controllers/details');
 const usersController = require('../controllers/users');
 const genToken = require('../util/generateToken');
+const passport = require('passport');
 
 /**
  * @swagger
@@ -13,7 +14,7 @@ const genToken = require('../util/generateToken');
  */
 
 
-router.get('/',detailsController.home_page);
+//router.get('/', detailsController.home_page);
 
 
 //Users Routes
@@ -21,7 +22,7 @@ router.get('/',detailsController.home_page);
 /**
  * @swagger
  * path:
- *   /users/user/{id}:
+ *   /user/{id}:
  *     get:
  *       summary: Returns a User by id
  *       tags: [Users]
@@ -46,11 +47,11 @@ router.get('/',detailsController.home_page);
  *         default:
  *           description: Unexpected error
  */
-router.get('/users/user/:id',usersController.getUserByID);
+router.get('/user/:id', usersController.getUserByID);
 
 /**
  * @swagger
- * /users/allusers:
+ * /api/v1/users/allusers:
  *  get:
  *    summary: Returns all Users
  *    tags: [Users]
@@ -63,12 +64,20 @@ router.get('/users/user/:id',usersController.getUserByID);
  *      '400':
  *        description: Unexpected error
  */
-router.get('/users/allusers',usersController.getAllUsers);
+router.get('/allusers', usersController.getAllUsers);
+
+//User Dash route
+router.get('/dashboard', usersController.userDashboard);
+
+
+
+//Register user
+//router.get('/createuser', usersController.register);
 
 /**
  * @swagger
  *
- * /users/createuser:
+ * /createuser:
  *   post:
  *     summary: Add a User
  *     tags: [Users]
@@ -88,6 +97,8 @@ router.get('/users/allusers',usersController.getAllUsers);
  *               email:
  *                 type: string
  *               password:
+ *                 type: string
+ *               password2:
  *                 type: string
  *               user_role:
  *                 type: integer
@@ -110,12 +121,12 @@ router.get('/users/allusers',usersController.getAllUsers);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/users/createuser',usersController.createUser);
+router.post('/createuser', usersController.createUser);
 
 /**
  * @swagger
  *
- * /users/updateuser/{id}:
+ * /updateuser/{id}:
  *   put:
  *     summary: Update a User
  *     tags: [Users]
@@ -164,12 +175,26 @@ router.post('/users/createuser',usersController.createUser);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/users/updateuser/:id',usersController.updateUser);
+router.put('/updateuser/:id', usersController.updateUser);
+
 
 // User Login
+router.get('/login', usersController.login)
 
-router.get('/users/login',usersController.login);
-router.get('/users/register',usersController.register);
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/users/dashboard',
+    failureRedirect: '/users/login',
+    failureFlash: true
+})
+);
+
+// router.post('/users/login', passport.authenticate('local', {
+//     successRedirect: '/users/dashboard',
+//     failureRedirect: '/users/login', failureFlash: true
+// }));
+
+
+
 
 //User Categories route
 
@@ -188,7 +213,7 @@ router.get('/users/register',usersController.register);
  *      '400':
  *        description: Unexpected error
  */
-router.get('/usercategory',usersController.getUserCategories);
+router.get('/usercategory', usersController.getUserCategories);
 
 /**
  * @swagger
@@ -218,7 +243,7 @@ router.get('/usercategory',usersController.getUserCategories);
  *         default:
  *           description: Unexpected error
  */
-router.get('/usercategory/:id',usersController.getUserCategoryID);
+router.get('/usercategory/:id', usersController.getUserCategoryID);
 
 /**
  * @swagger
@@ -248,7 +273,7 @@ router.get('/usercategory/:id',usersController.getUserCategoryID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/usercategory',usersController.createUserCategory);
+router.post('/usercategory', usersController.createUserCategory);
 
 /**
  * @swagger
@@ -285,16 +310,16 @@ router.post('/usercategory',usersController.createUserCategory);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/usercategory/:id',usersController.updateUserCategory);
+router.put('/usercategory/:id', usersController.updateUserCategory);
 
 //User Types route
-router.get('/usertypes',usersController.getUserRoles);
-router.get('/usertypes/:id',usersController.getUserRolesByID);
+router.get('/usertypes', usersController.getUserRoles);
+router.get('/usertypes/:id', usersController.getUserRolesByID);
 
 
 //User outlets route
-router.get('/useroutlets/:id',usersController.getUserOutletsByUserID);
-router.post('/useroutlets/:id',usersController.updateUserOutletsByUserID);
+router.get('/useroutlets/:id', usersController.getUserOutletsByUserID);
+router.post('/useroutlets/:id', usersController.updateUserOutletsByUserID);
 
 
 // router.get('*', (req, res) =>
@@ -305,4 +330,4 @@ router.post('/useroutlets/:id',usersController.updateUserOutletsByUserID);
 
 
 
-module.exports=router;
+module.exports = router;

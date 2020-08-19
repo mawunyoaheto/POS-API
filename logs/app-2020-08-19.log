@@ -1,0 +1,1 @@
+{"message":"::1 - - [19/Aug/2020:20:10:59 +0000] \"GET /api/v1/api/v1/users/allusers HTTP/1.1\" 404 167 \"http://localhost:5002/api-docs/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0\"\n","level":"info","timestamp":"2020-08-19 09:10:59 PM +0100"}

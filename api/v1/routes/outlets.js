@@ -14,17 +14,33 @@ const genToken = require('../util/generateToken');
 
 //Outlet routes
 
-router.get('/outlet',outletsController.getOutlets);
+
+/**
+ * @swagger
+ * /outlets/all-outlets:
+ *  get:
+ *    summary: Returns all outlets(branches)
+ *    tags: [Outlets]
+ *    description: Get all outlets(branches)
+ *    responses:
+ *      '200':
+ *        description: OK
+ *      '404':
+ *        description: No records found
+ *      '400':
+ *        description: Unexpected error
+ */
+router.get('/all-outlets',outletsController.getOutlets);
 
 /**
  * @swagger
  * path:
- *   /outlet/{id}:
+ *   /outlets/get-outlet/{id}:
  *     get:
  *       summary: Returns an Outlet by id
  *       tags: [Outlets]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of Outlet to return
@@ -44,13 +60,13 @@ router.get('/outlet',outletsController.getOutlets);
  *         default:
  *           description: Unexpected error
  */
-router.get('/outlet/:id',outletsController.getOutletsByID);
+router.get('/get-outlet/:id',outletsController.getOutletsByID);
 
 
 /**
  * @swagger
  *
- * /outlet:
+ * /outlets/add-outlet:
  *   post:
  *     summary: Add an Outlet (Branch)
  *     tags: [Outlets]
@@ -87,17 +103,17 @@ router.get('/outlet/:id',outletsController.getOutletsByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/outlet',outletsController.createOutlet);
+router.post('/add-outlet',outletsController.createOutlet);
 
 /**
  * @swagger
  *
- * /outlet/{id}:
+ * /outlets/update-outlet/{id}:
  *   put:
  *     summary: Update an Outlet (Branch)
  *     tags: [Outlets]
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: id
  *         required: true
  *         description: ID of outlet to update
@@ -136,6 +152,6 @@ router.post('/outlet',outletsController.createOutlet);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/outlet/:id',outletsController.updateOutlet);
+router.put('/update-outlet/:id',outletsController.updateOutlet);
 
 module.exports=router;

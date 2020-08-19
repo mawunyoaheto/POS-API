@@ -4,36 +4,27 @@ const db = require('../util/db_worm');
 var os = require('os');
 
 const Helper = {
-  /**
-   * Hash Password Method
-   * @param {string} password
-   * @returns {string} returns hashed password
-   */
+ 
+   //Hash Password Method
+   
   hashPassword(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8))
   },
-  /**
-   * comparePassword
-   * @param {string} hashPassword 
-   * @param {string} password 
-   * @returns {Boolean} return True or False
-   */
+
+   //comparePassword
+
   comparePassword(hashPassword, password) {
     return bcrypt.compareSync(password, hashPassword);
   },
-  /**
-   * isValidEmail helper method
-   * @param {string} email
-   * @returns {Boolean} True or False
-   */
+
+   //isValidEmail helper method
+  
   isValidEmail(email) {
     return /\S+@\S+\.\S+/.test(email);
   },
-  /**
-   * Gnerate Token
-   * @param {string} id
-   * @returns {string} token
-   */
+ 
+   // Gnerate Token
+
   generateToken(id) {
     const token = jwt.sign({
       userId: id

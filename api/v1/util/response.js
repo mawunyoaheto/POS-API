@@ -13,5 +13,21 @@ Response.prototype.json = function(status, body) {
 
     
 }
+function ResponseBody(status, data, message) {
+    this.status = status;
+    this.data = data;
+    this.message = message;
 
-module.exports = Response;
+    var body ={
+        status: status,
+        data: data,
+        message: message
+    };
+
+    return body;
+}
+
+module.exports = {
+    Response,
+    ResponseBody
+};

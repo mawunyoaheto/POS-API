@@ -15,81 +15,105 @@ const userMachineIP = `${dbConfig.userIP}`;
 
 async function createUser(req, res, next) {
 
-  const pool = await db.dbConnection()
+  
 
+  const pool = await db.dbConnection()
+  let errors =[]
   if (!req.body.fname) {
     res.status(400).send({ 'message': 'First Name missing' });
+    errors.push({ 'message': 'First Name missing' });
   }
 
   if (!req.body.lname) {
+    errors.push({ 'message': 'Last Name missing' });
     res.status(400).send({ 'message': 'Last Name missing' });
   }
 
-  if (!req.body.uname || !req.body.password) {
+  if (!req.body.uname || !req.body.password || !req.body.password2) {
+    errors.push({ 'message': 'Some values are missing' });
     res.status(400).send({ 'message': 'Some values are missing' });
   }
 
+if (req.body.password!=req.body.password2) {
+  errors.push({ 'message': 'Passwords do not match' });
+    //res.status(400).send({ 'message': 'Passwords do not match' });
+  }
+
   if (!helper.Helper.isValidEmail(req.body.email)) {
+    errors.push({ 'message': 'Please enter a valid email address' });
     res.status(400).send({ 'message': 'Please enter a valid email address' });
   }
 
-  const hashPassword = helper.Helper.hashPassword(req.body.password);
+  if(errors.length>0){
 
-  const createQuery = `INSERT INTO public.users(first_name, last_name, username, email, password, user_role_id, phone_number, blocked, 
-    create_date, create_userid, usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning *`;
-
-    const userOutletsQuery = `INSERT INTO public.user_outlets(userid, outletid) VALUES ($1, $2);`
-
-
-  const values = [
-    req.body.fname,
-    req.body.lname,
-    req.body.uname,
-    req.body.email,
-    hashPassword,
-    req.body.user_role,
-    req.body.cellphone,
-    req.body.blocked,
-    moment(new Date()),
-    req.body.create_userid,
-    userMachineName,
-    userMachineIP
-  ];
-
-
-  try {
-
-    //await pool.query('BEGIN')
-
-    const records = await pool.query(createQuery, values)
-
-    userID = records.rows[0].id
-
-    for (var i = 0; i < req.body.useroutlets.length; i++) {
-
-      var userOutletValues=[
-        userID,
-        req.body.useroutlets[i].id      
-      ];
-
-     await pool.query(userOutletsQuery,userOutletValues)
-
-    }
-
-    await pool.query('COMMIT')
-      //const token = helper.Helper.generateToken(records[0].id);
-      //console.log('token', token)
-      res.status(201).json({ 'message': 'Success' });
-
-  } catch (error) {
-
-    pool.query('ROLLBACK')
-
-    if (error.routine === '_bt_check_unique') {
-      res.status(400).send({ 'message': 'User with that EMAIL already exist' })
-    }
-    return res.status(400).json('record update failed with error: ' + helper.parseError(error, createQuery))
+    res.render('register',{errors})
   }
+
+  else{
+
+    const hashPassword = helper.Helper.hashPassword(req.body.password);
+
+    const createQuery = `INSERT INTO public.users(first_name, last_name, username, email, password, user_role_id, phone_number, blocked, 
+      create_date, create_userid, usermachinename, usermachineip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) returning *`;
+  
+      const userOutletsQuery = `INSERT INTO public.user_outlets(userid, outletid) VALUES ($1, $2);`
+  
+  
+    const values = [
+      req.body.fname,
+      req.body.lname,
+      req.body.uname,
+      req.body.email,
+      hashPassword,
+      req.body.user_role,
+      req.body.cellphone,
+      req.body.blocked,
+      moment(new Date()),
+      req.body.create_userid,
+      userMachineName,
+      userMachineIP
+    ];
+  
+  
+    try {
+  
+      
+      //await pool.query('BEGIN')
+  
+      const records = await pool.query(createQuery, values)
+  
+      userID = records.rows[0].id
+  
+      for (var i = 0; i < req.body.useroutlets.length; i++) {
+  
+        var userOutletValues=[
+          userID,
+          req.body.useroutlets[i].id      
+        ];
+  
+       await pool.query(userOutletsQuery,userOutletValues)
+  
+      }
+  
+      await pool.query('COMMIT')
+        //const token = helper.Helper.generateToken(records[0].id);
+        //console.log('token', token)
+        
+        res.status(201).json({ 'message': 'Success' });
+        res.render('login')
+  
+    } catch (error) {
+  
+      pool.query('ROLLBACK')
+  
+      if (error.routine === '_bt_check_unique') {
+        res.status(400).send({ 'message': 'User with that EMAIL already exist' })
+      }
+      return res.status(400).json('record update failed with error: ' + helper.parseError(error, createQuery))
+    }
+
+  }
+
 
 }
 
@@ -488,19 +512,29 @@ async function updateUserCategory(req, res,error) {
   
   }
 
-
+//Longin renderer
 function login(req, res) {
 
- res.render('login')
-
+  if (req.isAuthenticated()) {
+    res.render('dashboard');
+    }
+    else{
+      res.render('login')    }
 }
 
+//Register renderer
 function register(req, res) {
 
   res.render('register')
  
  }
 
+ //User Dash renderer
+ function userDashboard(req, res) {
+
+  res.render('dashboard',{user: req.user.first_name})
+ 
+ }
 
  //GET User Category by ID
 
@@ -562,6 +596,7 @@ module.exports = {
   createUser,
   getAllUsers,
   login,
+  userDashboard,
   register,
   deleteUser,
   getUserID,

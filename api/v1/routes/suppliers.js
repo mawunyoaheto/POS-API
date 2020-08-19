@@ -9,7 +9,7 @@ const genToken = require('../util/generateToken');
 
 /**
  * @swagger
- * /supplier:
+ * /suppliers/all-suppliers:
  *  get:
  *    summary: Returns all suppliers
  *    tags: [Suppliers]
@@ -18,12 +18,12 @@ const genToken = require('../util/generateToken');
  *      '200':
  *        description: OK
  */
-router.get('/supplier',suppliersController.getSuppliers);
+router.get('/all-suppliers',suppliersController.getSuppliers);
 
 /**
  * @swagger
  * path:
- *   /supplier/{id}:
+ *   /suppliers/get-supplier/{id}:
  *     get:
  *       summary: Returns a Supplier by id
  *       tags: [Suppliers]
@@ -48,12 +48,12 @@ router.get('/supplier',suppliersController.getSuppliers);
  *         default:
  *           description: Unexpected error
  */
-router.get('/supplier/:id',suppliersController.getSupplierByID);
+router.get('/get-supplier/:id',suppliersController.getSupplierByID);
 
 /**
  * @swagger
  *
- * /supplier:
+ * /suppliers/add-supplier:
  *   post:
  *     summary: Add a Supplier
  *     tags: [Suppliers]
@@ -82,12 +82,12 @@ router.get('/supplier/:id',suppliersController.getSupplierByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/supplier',suppliersController.createSupplier);
+router.post('/add-supplier',suppliersController.createSupplier);
 
 /**
  * @swagger
  * path:
- *   /supplier/{id}:
+ *   /suppliers/update-supplier/{id}:
  *     put:
  *       summary: Updates a Supplier by id
  *       tags: [Suppliers]
@@ -121,6 +121,6 @@ router.post('/supplier',suppliersController.createSupplier);
  *         '200':
  *           description: updated
  */
-router.put('/supplier/:id',suppliersController.updateSupplier);
+router.put('/update-supplier/:id',suppliersController.updateSupplier);
 
 module.exports=router;

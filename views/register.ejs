@@ -11,7 +11,12 @@
 <body>
     <h1>Create User</h1>
 
-    <form action="/users/createuser" method="POST">
+    <ul>
+        <% if(typeof errors != 'undefined') { %> <% errors.forEach(error=> { %>
+                <li><%= error.message %></li> 
+            <% }) %> <% } %>
+    </ul>
+    <form >
         <div>
             <input type="text" id="fname" name="fname" placeholder="First Name" required>
         </div>
@@ -46,7 +51,7 @@
             <input type="text" id="useroutlets" name="useroutlets" placeholder="Branch ID" required>
         </div>
         <div>
-            <input type="button" value="Create User">
+            <button type="submit" formaction="/users/createuser" formmethod="POST">submit</button>
         </div>
         <div>
             <a href="/users/login">Already registered? Login here</a>

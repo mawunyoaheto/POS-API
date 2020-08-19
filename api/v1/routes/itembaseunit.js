@@ -10,7 +10,7 @@ const genToken = require('../util/generateToken');
 
 /**
  * @swagger
- * /itembaseunit:
+ * /items/all-baseunits:
  *  get:
  *    summary: Returns all Item Base Units
  *    tags: [ItemBaseUnit]
@@ -19,19 +19,19 @@ const genToken = require('../util/generateToken');
  *      '200':
  *        description: OK
  */
-router.get('/itembaseunit',operationsController.getItemBaseUnits);
+router.get('/all-baseunits',operationsController.getItemBaseUnits);
 
 
 
 /**
  * @swagger
  * path:
- *   /itembaseunit/{id}:
+ *   /items/get-baseunit/{id}:
  *     get:
  *       summary: Returns an Item Base Unit by id
  *       tags: [ItemBaseUnit]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of item base unit to return
@@ -43,22 +43,7 @@ router.get('/itembaseunit',operationsController.getItemBaseUnits);
  *           content:
  *             application/json:
  *               schema:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     format: int64
- *                     example: 4
- *                   baseunit:
- *                     type: string
- *                     example: BOX
- *                   isactive:
- *                     type: boolean
- *                     exmample: true
- *                   createuserid:
- *                     type: integer
- *                     example: 2
- * 
+ *                 type: object    
  *         '400':
  *           description: The specified base unit ID is invalid (not a number).
  *         '404':
@@ -66,14 +51,13 @@ router.get('/itembaseunit',operationsController.getItemBaseUnits);
  *         default:
  *           description: Unexpected error
  */
-
-router.get('/itembaseunit/:id',operationsController.getItemBaseUnitByID);
+router.get('/get-baseunit/:id',operationsController.getItemBaseUnitByID);
 
 
 /**
  * @swagger
  *
- * /itembaseunit:
+ * /items/add-baseunit:
  *   post:
  *     summary: Create Item Base Unit
  *     tags: [ItemBaseUnit]
@@ -92,18 +76,17 @@ router.get('/itembaseunit/:id',operationsController.getItemBaseUnitByID);
  *       '200':
  *         description: created
  */
-
-router.post('/itembaseunit',operationsController.createItemBaseUnit);
+router.post('/add-baseunit',operationsController.createItemBaseUnit);
 
 /**
  * @swagger
  * path:
- *   /itembaseunit/{id}:
+ *   /items/update-baseunit/{id}:
  *     put:
  *       summary: Updates an Item Base Unit by id
  *       tags: [ItemBaseUnit]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of item base unit to update
@@ -124,8 +107,7 @@ router.post('/itembaseunit',operationsController.createItemBaseUnit);
  *         '200':
  *           description: updated
  */
-
-router.put('/itembaseunit/:id',operationsController.updateItemBaseUnit);
+router.put('/update-baseunit/:id',operationsController.updateItemBaseUnit);
 
 
 module.exports=router;

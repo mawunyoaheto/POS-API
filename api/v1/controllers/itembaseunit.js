@@ -4,15 +4,19 @@ var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
 var dbConfig = require('../../../config');
-
+const Response = require('../util/response');
+const respBody = require('../util/response');
 
 const userid = `${dbConfig.app_user}`;
 const userMachineName = `${dbConfig.userMachine}`;
 const userMachineIP = `${dbConfig.userIP}`;
 
+var itemBaseRes={};
 
 
 async function getItemBaseUnits(req, res) {
+  var resp = new Response.Response(res);
+
   const queryString = 'select * from public.itembaseunits'
   const pool = await db.dbConnection()
   try {
@@ -21,28 +25,31 @@ async function getItemBaseUnits(req, res) {
 
       if (err) {
 
-        return res.status(402).json('record not found with error: ' + helper.parseError(err, queryString))
-
+        itemBaseRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+        resp.json(404, itemBaseRes);
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
-          return res.status(200).send(recordset.rows)
+          itemBaseRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+        resp.json(200, itemBaseRes);
         } else {
-          return res.status(404).json('record not found')
+          itemBaseRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(404, itemBaseRes);
         }
 
       }
     });
 
   } catch (error) {
-    return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
-  }
+    itemBaseRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+    resp.json(404, itemBaseRes);  }
 
 }
 
 
 async function getItemBaseUnitByID(req, res) {
-  const id = req.params.id;
+  var resp = new Response.Response(res);
+  const id = req.query.id;
 
   const pool = await db.dbConnection()
 
@@ -54,23 +61,24 @@ async function getItemBaseUnitByID(req, res) {
 
       if (recordset.rows.length > 0) {
         // send records as a response
-        return res.status(200).json(recordset.rows)
+        itemBaseRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+        resp.json(200, itemBaseRes);
       } else {
-        return res.status(404).json('record not found')
+        itemBaseRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(404, itemBaseRes);
       }
     });
 
   } catch (error) {
-    return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
-
+    itemBaseRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+    resp.json(404, itemBaseRes); 
+   }
   }
-
-}
 
 
 //add item base unit
 async function createItemBaseUnit(req, res) {
-
+  var resp = new Response.Response(res);
   const pool = await db.dbConnection()
 
   const createQuery = `INSERT INTO public.itembaseunits(baseunit, isactive, create_user, usermachinename, usermachineip) 
@@ -91,26 +99,26 @@ async function createItemBaseUnit(req, res) {
       userMachineIP
     ];
 
-    await pool.query(createQuery, values)
+   var recordset =  await pool.query(createQuery, values)
 
     //}
     //await pool.query('COMMIT')
-    return res.status(201).json({ 'message': 'success' })
+    itemBaseRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+    resp.json(200, itemBaseRes);
 
 
   } catch (error) {
 
-    pool.query('ROLLBACK')
-    return res.status(402).json('record insert failed with error: ' + helper.parseError(error, createQuery))
-
+    itemBaseRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+    resp.json(404, itemBaseRes); 
   }
 }
 
 
 //update item base unit
 async function updateItemBaseUnit(req, res, error) {
-
-  const id = req.params.id;
+  var resp = new Response.Response(res);
+  const id = req.query.id;
   const pool = await db.dbConnection();
 
   const values = [
@@ -130,17 +138,19 @@ async function updateItemBaseUnit(req, res, error) {
 
     if (row_count.rowCount > 0) {
 
-      return res.status(201).json({ 'message': 'success' })
+      itemBaseRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+      resp.json(200, itemBaseRes);
 
     } else {
 
-      return res.status(404).json({ 'message': 'not found' })
+      itemBaseRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(404, itemBaseRes);
     }
 
 
-  } catch (err) {
-    return res.status(400).json('record insert failed with error: ' + helper.parseError(err, updateonequery))
-  }
+  } catch (error) {
+    itemBaseRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+    resp.json(404, itemBaseRes);   }
 
 }
 

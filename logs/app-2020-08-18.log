@@ -1,0 +1,2 @@
+{"message":"2 record(s) found","level":"info","timestamp":"2020-08-18 06:14:55 AM +0100"}
+{"message":"::1 - - [18/Aug/2020:05:14:55 +0000] \"GET /api/v1/suppliers/all-suppliers HTTP/1.1\" 404 - \"http://localhost:5002/api-docs/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0\"\n","level":"info","timestamp":"2020-08-18 06:14:55 AM +0100"}

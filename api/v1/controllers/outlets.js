@@ -3,6 +3,8 @@ var moment = require('moment');
 var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
+const Response = require('../util/response');
+const respBody = require('../util/response');
 var dbConfig = require('../../../config');
 
 
@@ -10,8 +12,10 @@ const userid = `${dbConfig.app_user}`;
 const userMachineName = `${dbConfig.userMachine}`;
 const userMachineIP = `${dbConfig.userIP}`;
 
+var outletsRes = {};
 //GET OUTLETS
 async function getOutlets(req, res, error) {
+  var resp = new Response.Response(res);
 
     const queryString = 'SELECT * FROM public.outlets'
     const pool = await db.dbConnection()
@@ -23,16 +27,18 @@ async function getOutlets(req, res, error) {
       if (row_count.rowCount > 0) {
   
         // send records as a response
-        return res.status(200).json(row_count.rows)
+        outletsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(200, outletsRes);
   
       } else {
-        return res.status(404).json({ 'message': 'failed with no records found' })
+        outletsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(404, outletsRes);
       }
   
     } catch (error) {
   
-      return res.status(402).json('record not found with error: ' + helper.parseError(error, queryString))
-  
+      outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+    resp.json(404, outletsRes);
     }
   
   }
@@ -41,9 +47,9 @@ async function getOutlets(req, res, error) {
   //GET OUTLET BY ID
   
   async function getOutletsByID(req, res, error) {
-  
-    const id = req.params.id;
-    const queryString = `select * FROM public.outlets WHERE outletid='${id}'`
+    var resp = new Response.Response(res);
+    var id = req.query.id;
+    var queryString = `select * FROM public.outlets WHERE outletid='${id}'`
     const pool = await db.dbConnection()
   
     try {
@@ -52,22 +58,25 @@ async function getOutlets(req, res, error) {
   
         if (err) {
   
-          return res.status(400).json('record not found with error: ' + helper.parseError(err, queryString))
-  
+          outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(err));
+    resp.json(404, outletsRes);
+    
         } else {
           if (recordset.rows.length > 0) {
             // send records as a response
-            return res.status(200).json(recordset.rows)
+            outletsRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+          resp.json(200, outletsRes);
           } else {
-            return res.status(404).json({ 'message': 'failed' })
+            outletsRes= respBody.ResponseBody('success',recordset.rows,recordset.rows.length + ' record(s) found');
+        resp.json(404, outletsRes);
           }
   
         }
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
-  
+      outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+      resp.json(404, outletsRes);  
     }
   
   }
@@ -77,7 +86,7 @@ async function getOutlets(req, res, error) {
   //ADD OUTLET
   
   async function createOutlet(req, res) {
-  
+    var resp = new Response.Response(res);
     const values = [
       req.body.outletname,
       req.body.countryID,
@@ -103,27 +112,31 @@ async function getOutlets(req, res, error) {
       const row_count = await pool.query(createQuery, values)
       if (row_count.rowCount > 0) {
   
-        return res.status(201).json({ 'message': 'success' })
+        outletsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+          resp.json(200, outletsRes);
       } else {
   
-        return res.status(402).json({ 'message': 'failed' })
+        outletsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
+        resp.json(404, outletsRes);
   
       }
   
     } catch (error) {
   
-      return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
-    }
+      outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+      resp.json(404, outletsRes);      }
   }
 
   //UPDATE OUTLET
   async function updateOutlet(req, res) {
 
-    const id = req.params.id;
+    var resp = new Response.Response(res);
+    const id = req.query.id;
+
     const pool = await db.dbConnection();
   
     const values = [
-      req.body.name,
+      req.body.outletname,
       req.body.taxID,
       req.body.countryID,
       req.body.regionID,
@@ -135,7 +148,7 @@ async function getOutlets(req, res, error) {
       req.body.isactive
     ];
   
-    const updateonequery = `UPDATE public.outlets SET outlet_name='${req.body.name}', tax_id='${req.body.taxID}', 
+    const updateonequery = `UPDATE public.outlets SET outlet_name='${req.body.outletname}', tax_id='${req.body.taxID}', 
       country_id='${req.body.countryID}', region_id='${req.body.regionID}', city_id='${req.body.cityID}', email='${req.body.email}', 
       contactnumbers='${req.body.contactnumber}', modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}',
       isactive='${req.body.isactive}', usermachinename ='${userMachineName}', usermachineip='${userMachineIP}' WHERE outletid = '${id}' returning *`;
@@ -146,23 +159,25 @@ async function getOutlets(req, res, error) {
   
         if (err) {
   
-          return res.status(402).json('record update failed with error: ' + helper.parseError(err, updateonequery))
-  
+          outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(err));
+          resp.json(404, outletsRes);    
         } else {
           if (recordset.rowCount > 0) {
-            // send records as a response
-            return res.status(201).json({ 'message': 'success' })
+          
+        outletsRes= respBody.ResponseBody('success',recordset.rows,recordset.rowCount + ' record(s) found');
+        resp.json(200, outletsRes);
           } else {
-            return res.status(402).json({ 'message': 'failed' })
+              
+        outletsRes= respBody.ResponseBody('success',recordset.rows,recordset.rowCount + ' record(s) found');
+        resp.json(404, outletsRes);
           }
   
         }
       });
   
     } catch (error) {
-      console.log(error);
-      res.end()
-  
+      outletsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error));
+      resp.json(404, outletsRes);  
     }
   };
   module.exports={
