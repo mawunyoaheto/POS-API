@@ -1,43 +1,47 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
-const detailsController = require('../controllers/details');
-const taxController = require('../controllers/tax');
+const userCategoriesController = require('../controllers/user_categories');
 const genToken = require('../util/generateToken');
-
-
-//Tax routes
-
+const passport = require('passport');
 
 /**
  * @swagger
- * /taxes/all-tax:
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+ //User Categories route
+
+/**
+ * @swagger
+ * /users/all-usercategories:
  *  get:
- *    summary: Returns all Tax
- *    tags: [Tax]
- *    description: Get all Tax
+ *    summary: Returns all User Categories
+ *    tags: [User Category]
+ *    description: Get all User Categories
  *    responses:
  *      '200':
  *        description: OK
  *      '404':
- *        description: No Record found
+ *        description: No records found
  *      '400':
  *        description: Unexpected error
  */
-router.get('/all-tax',taxController.getTax);
+router.get('/all-usercategories', userCategoriesController.getUserCategories);
 
 /**
  * @swagger
  * path:
- *   /taxes/get-tax:
+ *   /users/get-usercategory:
  *     get:
- *       summary: Returns Tax by id
- *       tags: [Tax]
+ *       summary: Returns a User Category by id
+ *       tags: [User Category]
  *       parameters:
  *         - in: query
  *           name: id
  *           required: true
- *           description: id of Tax to return
+ *           description: id of User Category to return
  *           schema:
  *             type: integer
  *       responses:
@@ -48,21 +52,21 @@ router.get('/all-tax',taxController.getTax);
  *               schema:
  *                 type: object
  *         '400':
- *           description: The specified Tax ID is invalid (not a number).
+ *           description: The specified User Category ID is invalid (not a number).
  *         '404':
- *           description: A Tax with the specified ID was not found.
+ *           description: A User Category with the specified ID was not found.
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-tax',taxController.getTaxByID);
+router.get('/get-usercategory', userCategoriesController.getUserCategoryID);
 
 /**
  * @swagger
  *
- * /taxes/add-tax:
+ * /users/add-usercategory:
  *   post:
- *     summary: Add New Tax
- *     tags: [Tax]
+ *     summary: Add New User Category
+ *     tags: [User Category]
  *     requestBody:
  *       required: true
  *       content:
@@ -70,37 +74,35 @@ router.get('/get-tax',taxController.getTaxByID);
  *           schema:
  *             type: object
  *             properties:
- *               taxdescription:
+ *               category:
  *                 type: string
- *               percentage:
- *                 type: float
- *               userid:
- *                 type: integer
  *               isactive:
  *                 type: boolean
+ *               createuser_id:
+ *                 type: integer
  *     responses:
- *       '200':
+ *       '201':
  *         description: created
  *       '402':
  *         description: failed
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-tax',taxController.createTax);
+router.post('/add-usercategory', userCategoriesController.createUserCategory);
 
 /**
  * @swagger
  *
- * /taxes/update-tax:
+ * /users/update-usercategory:
  *   put:
- *     summary: Update Tax
- *     tags: [Tax]
+ *     summary: Update User Category
+ *     tags: [User Category]
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: id
  *         required: true
- *         description: id of Tax to return
- *         schema:
+ *         description: ID of User Category to update
+ *         shema:
  *           type: integer
  *     requestBody:
  *       required: true
@@ -109,22 +111,20 @@ router.post('/add-tax',taxController.createTax);
  *           schema:
  *             type: object
  *             properties:
- *               taxdescription:
+ *               category:
  *                 type: string
- *               percentage:
- *                 type: float
- *               userid:
- *                 type: integer
  *               isactive:
  *                 type: boolean
+ *               userId:
+ *                 type: integer
  *     responses:
- *       '200':
+ *       '201':
  *         description: created
  *       '402':
  *         description: failed
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-tax',taxController.updateTax);
+router.put('/update-usercategory', userCategoriesController.updateUserCategory);
 
 module.exports=router;

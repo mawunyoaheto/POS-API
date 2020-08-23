@@ -10,7 +10,7 @@ const genToken = require('../util/generateToken');
 
 /**
  * @swagger
- * /modules:
+ * /moduletranstages/all-modules:
  *  get:
  *    summary: Returns all Modules
  *    tags: [Modules]
@@ -23,18 +23,18 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/modules',operationsController.getModules);
+router.get('/all-modules',operationsController.getModules);
 
 
 /**
  * @swagger
  * path:
- *   /modules/{id}:
+ *   /moduletranstages/get-module:
  *     get:
  *       summary: Returns a Module by id
  *       tags: [Modules]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of Module to return
@@ -54,17 +54,17 @@ router.get('/modules',operationsController.getModules);
  *         default:
  *           description: Unexpected error
  */
-router.get('/modules/:id',operationsController.getModuleByID);
+router.get('/get-module',operationsController.getModuleByID);
 
 /**
  * @swagger
  * path:
- *   /moduletrans/{id}:
+ *   /moduletranstages/moduletrans:
  *     get:
  *       summary: Returns a Module Transactions by Module id
  *       tags: [Module Transactions]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of Module to return
@@ -84,17 +84,17 @@ router.get('/modules/:id',operationsController.getModuleByID);
  *         default:
  *           description: Unexpected error
  */
-router.get('/moduletrans/:id',operationsController.getModuleTransactionsByModuleID); 
+router.get('/moduletrans',operationsController.getModuleTransactionsByModuleID); 
 
 /**
  * @swagger
  * path:
- *   /transtages/{id}:
+ *   /moduletranstages/get-transtages:
  *     get:
  *       summary: Returns Transaction Stages Module Transaction id
  *       tags: [Transaction Stages]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: module Transaction id for returning Transaction Stages 
@@ -114,6 +114,6 @@ router.get('/moduletrans/:id',operationsController.getModuleTransactionsByModule
  *         default:
  *           description: Unexpected error
  */
-router.get('/transtages/:id',operationsController.getTransactionStagesByModuleTransID);
+router.get('/get-transtages',operationsController.getTransactionStagesByModuleTransID);
 
 module.exports=router;

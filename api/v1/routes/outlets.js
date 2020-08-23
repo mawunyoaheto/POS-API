@@ -35,7 +35,7 @@ router.get('/all-outlets',outletsController.getOutlets);
 /**
  * @swagger
  * path:
- *   /outlets/get-outlet/{id}:
+ *   /outlets/get-outlet:
  *     get:
  *       summary: Returns an Outlet by id
  *       tags: [Outlets]
@@ -60,7 +60,7 @@ router.get('/all-outlets',outletsController.getOutlets);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-outlet/:id',outletsController.getOutletsByID);
+router.get('/get-outlet',outletsController.getOutletsByID);
 
 
 /**
@@ -108,7 +108,7 @@ router.post('/add-outlet',outletsController.createOutlet);
 /**
  * @swagger
  *
- * /outlets/update-outlet/{id}:
+ * /outlets/update-outlet:
  *   put:
  *     summary: Update an Outlet (Branch)
  *     tags: [Outlets]
@@ -152,6 +152,6 @@ router.post('/add-outlet',outletsController.createOutlet);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-outlet/:id',outletsController.updateOutlet);
+router.put('/update-outlet',outletsController.updateOutlet);
 
 module.exports=router;

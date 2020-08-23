@@ -39,7 +39,7 @@ router.get('/products',productsController.getProducts);
 /**
  * @swagger
  * path:
- *   /products/get-product/{id}:
+ *   /products/get-product:
  *     get:
  *       summary: Returns a product by id
  *       tags: [Products]
@@ -64,7 +64,7 @@ router.get('/products',productsController.getProducts);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-product/:id',productsController.getProductByID);
+router.get('/get-product',productsController.getProductByID);
 
 /**
  * @swagger
@@ -107,12 +107,12 @@ router.post('/add-product',productsController.createPoduct);
 /**
  * @swagger
  * path:
- *   /products/update-product/{id}:
+ *   /products/update-product:
  *     put:
  *       summary: Updates a product by id
  *       tags: [Products]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of product to update
@@ -147,7 +147,7 @@ router.post('/add-product',productsController.createPoduct);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-product/:id',productsController.updateProduct);
+router.put('/update-product',productsController.updateProduct);
 
 
 //product Catgeories routes
@@ -171,7 +171,7 @@ router.get('/get-category',productsController.getProductCategories);
 /**
  * @swagger
  * path:
- *   /products/get-category/{id}:
+ *   /products/get-category:
  *     get:
  *       summary: Returns a product category by id
  *       tags: [Product Category]
@@ -196,7 +196,7 @@ router.get('/get-category',productsController.getProductCategories);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-category/:id',productsController.getProductCategoryID);
+router.get('/get-category',productsController.getProductCategoryID);
 
 /**
  * @swagger
@@ -229,7 +229,7 @@ router.post('/add-category',productsController.createPoductCategory);
 /**
  * @swagger
  * path:
- *   /products/update-category/{id}:
+ *   /products/update-category:
  *     put:
  *       summary: Updates a product category by id
  *       tags: [Product Category]
@@ -261,7 +261,7 @@ router.post('/add-category',productsController.createPoductCategory);
  *         default:
  *           description: Unexpected error
  */
-router.put('/update-category/:id',productsController.updateProductCategory);
+router.put('/update-category',productsController.updateProductCategory);
 
 
 

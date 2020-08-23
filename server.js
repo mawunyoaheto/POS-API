@@ -133,9 +133,9 @@ app.use('/api/v1/operations',operations_routes);
 app.use('/api/v1/orders',orders_routes);
 app.use('/api/v1/outlets',outlet_routes);
 app.use('/api/v1/suppliers',suppliers_routes);
-app.use('/api/v1/tax',tax_routes);
+app.use('/api/v1/taxes',tax_routes);
 app.use('/api/v1/moduletranstages',moduletranstages_routes);
-app.use('/api/v1/payment',paymentmodes_routes);
+app.use('/api/v1/payments',paymentmodes_routes);
 app.use('/api/v1/epay',epayments_routes);
 app.use('/api/v1/items',itembaseunit_routes);
 

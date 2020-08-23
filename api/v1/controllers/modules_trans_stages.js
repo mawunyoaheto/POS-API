@@ -4,14 +4,19 @@ var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
 var dbConfig = require('../../../config');
+const Response = require('../util/response');
+const respBody = require('../util/response');
 
 
 const userid = `${dbConfig.app_user}`;
 const userMachineName = `${dbConfig.userMachine}`;
 const userMachineIP = `${dbConfig.userIP}`;
+var transResp={};
+
 
 //GET modules 
 async function getModules(req, res, error) {
+  var resp = new Response.Response(res);
 
     const queryString = `select * from public.modules WHERE isactive = 'true'`
     const pool = await db.dbConnection()
@@ -22,14 +27,17 @@ async function getModules(req, res, error) {
   
       if (recordset.rowCount > 0) {
         // send records as a response
-        return res.status(200).json(recordset.rows)
+        transResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+           resp.json(201, transResp);
   
       } else {
-        return res.status(404).json({ 'message': 'failed' })
+        transResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(404, transResp);
       }
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      transResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, transResp);
     }
   
   }
@@ -37,8 +45,8 @@ async function getModules(req, res, error) {
   
   //GET module by ID
   async function getModuleByID(req, res, error) {
-  
-    const moduleID = req.params.id;
+    var resp = new Response.Response(res);
+    const moduleID = req.query.id;
     const pool = await db.dbConnection()
   
   
@@ -48,16 +56,19 @@ async function getModules(req, res, error) {
   
       pool.query(queryString, function (error, recordset) {
   
-        if (recordset.rows.length > 0) {
+        if (recordset.rowCount > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+          transResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+           resp.json(201, transResp);
         } else {
-          return res.status(404).json('record not found')
+          transResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(404, transResp);
         }
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      transResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, transResp);
   
     }
   }
@@ -65,8 +76,8 @@ async function getModules(req, res, error) {
   
   //GET module transaction by module ID
   async function getModuleTransactionsByModuleID(req, res, error) {
-  
-    const moduleID = req.params.id;
+    var resp = new Response.Response(res);
+    const moduleID = req.query.id;
     const pool = await db.dbConnection()
   
   
@@ -79,7 +90,7 @@ async function getModules(req, res, error) {
       if (modTrans.rowCount > 0) {
   
         var transactionstages = []
-        var stages =[]
+        var stages ={}
   
         for (var i = 0; i < modTrans.rowCount; i++) {
   
@@ -97,16 +108,19 @@ async function getModules(req, res, error) {
           transactionstages.push(transaction)
          
         }
-        return res.status(200).json(transactionstages)
+        transResp = respBody.ResponseBody('success', transactionstages, modTrans.rowCount + ' record(s) found');
+           resp.json(201, transResp);
   
       } else {
   
-        return res.status(404).json('record not found')
+        transResp = respBody.ResponseBody('success', '', modTrans.rowCount + ' record(s) found');
+           resp.json(201, transResp);
       }
   
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      transResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, transResp);
   
     }
   }
@@ -125,8 +139,8 @@ async function getModules(req, res, error) {
     try {
   
       pool.query(queryString, function (err, recordset) {
-  
-        if (recordset.rows.length > 0) {
+
+        if (recordset.rowCount > 0) {
           // send records as a response
           return res.status(200).json(recordset.rows)
         } else {
@@ -135,7 +149,8 @@ async function getModules(req, res, error) {
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      transResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, transResp);
   
     }
   }

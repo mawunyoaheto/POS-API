@@ -11,7 +11,7 @@ const genToken = require('../util/generateToken');
 
 /**
  * @swagger
- * /payment-mode:
+ * /payments/all-paymentmodes:
  *  get:
  *    summary: Returns all Payment modes
  *    tags: [Payment Modes]
@@ -24,18 +24,18 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/payment-mode',operationsController.getPaymentModes);
+router.get('/all-paymentmodes',operationsController.getPaymentModes);
 
 
 /**
  * @swagger
  * path:
- *   /payment-mode/{id}:
+ *   /payments/get-paymentmode:
  *     get:
  *       summary: Returns a Payment Mode by id
  *       tags: [Payment Modes]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of PaymentMode to return
@@ -50,17 +50,17 @@ router.get('/payment-mode',operationsController.getPaymentModes);
  *                 type: object
  *         '400':
  *           description: The specified PaymentMode ID is invalid (not a number).
- *         '404':
+ *         '500':
  *           description: A PaymentMode with the specified ID was not found.
  *         default:
  *           description: Unexpected error
  */
-router.get('/payment-mode/:id',operationsController.getPaymentModeByID);
+router.get('/get-paymentmode',operationsController.getPaymentModeByID);
 
 /**
  * @swagger
  *
- * /payment-mode:
+ * /payments/add-paymentmode:
  *   post:
  *     summary: Add New Payment Mode
  *     tags: [Payment Modes]
@@ -85,17 +85,17 @@ router.get('/payment-mode/:id',operationsController.getPaymentModeByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/payment-mode',operationsController.createPaymentMode);
+router.post('/add-paymentmode',operationsController.createPaymentMode);
 
 /**
  * @swagger
  *
- * /payment-mode/{id}:
+ * /payments/update-paymentmode:
  *   put:
  *     summary: Update Payment Mode
  *     tags: [Payment Modes]
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: id
  *         required: true
  *         description: ID of outlet to update
@@ -122,6 +122,6 @@ router.post('/payment-mode',operationsController.createPaymentMode);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/payment-mode/:id',operationsController.updatePaymentMode);
+router.put('/update-paymentmode',operationsController.updatePaymentMode);
 
 module.exports=router;

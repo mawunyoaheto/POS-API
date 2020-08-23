@@ -112,10 +112,10 @@ async function createSupplier(req, res) {
       } else {
         if (recordset.rows.length > 0) {
           // send records as a response
-          suppliersRes = respBody.ResponseBody('success', recordset.rows, recordset.rows.length + ' record(s) found');
+          suppliersRes = respBody.ResponseBody('success', recordset.rows, recordset.rows.length + ' record(s) added');
           resp.json(200, suppliersRes);
         } else {
-          suppliersRes = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+          suppliersRes = respBody.ResponseBody('success', recordset.rows, recordset.rows.length + ' record(s) added');
           resp.json(404, suppliersRes);
         }
 
@@ -161,13 +161,13 @@ async function updateSupplier(req, res, error) {
     //console.log('update', row_count.rowCount)
     if (row_count.rowCount > 0) {
 
-      suppliersRes = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) found');
+      suppliersRes = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) updated');
       resp.json(200, suppliersRes);
 
     } else {
 
-      suppliersRes = respBody.ResponseBody('success', '', 'failed with error: ' + helper.parseError(error));
-      resp.json(404, suppliersRes);
+      suppliersRes = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) updated');
+          resp.json(404, suppliersRes);
     }
   }
   catch (error) {

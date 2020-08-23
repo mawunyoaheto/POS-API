@@ -4,15 +4,18 @@ var uuidv4 = require('uuidv4');
 const db = require('../util/db_worm');
 const helper = require('../util/helper');
 var dbConfig = require('../../../config');
+const Response = require('../util/response');
+const respBody = require('../util/response');
 
 
 const userid = `${dbConfig.app_user}`;
 const userMachineName = `${dbConfig.userMachine}`;
 const userMachineIP = `${dbConfig.userIP}`;
+var paymodeRes={};
 
 //GET PAYMENT MODE
 async function getPaymentModes(req, res, error) {
-
+  var resp = new Response.Response(res);
     const queryString = 'select * from public.payment_modes'
     const pool = await db.dbConnection()
   
@@ -22,22 +25,25 @@ async function getPaymentModes(req, res, error) {
   
         if (recordset.rowCount > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+          paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+           resp.json(201, paymodeRes);
   
         } else {
-          return res.status(404).json({ 'message': 'failed with no records found' })
+          paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+          resp.json(402, paymodeRes);
         }
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      paymodeRes = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(500, paymodeRes);
     }
   }
   
   //GET PAYMENT MODE BY ID
   async function getPaymentModeByID(req, res, error) {
-  
-    const id = req.params.id
+    var resp = new Response.Response(res);
+    const id = req.query.id
     const queryString = `select * FROM payment_modes WHERE id='${id}'`
     const pool = await db.dbConnection()
   
@@ -47,15 +53,18 @@ async function getPaymentModes(req, res, error) {
   
         if (recordset.rowCount > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+          paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+           resp.json(201, paymodeRes);
   
         } else {
-          return res.status(404).json({ 'message': 'failed' })
+          paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+          resp.json(402, paymodeRes);
         }
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      paymodeRes = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(500, paymodeRes);
     }
   
   }
@@ -64,7 +73,7 @@ async function getPaymentModes(req, res, error) {
   
   //ADD PAYMENT MODE
   async function createPaymentMode(req, res, error) {
-  
+    var resp = new Response.Response(res);
     const values = [
       req.body.description,
       req.body.isactive,
@@ -84,22 +93,25 @@ async function getPaymentModes(req, res, error) {
   
       if (row_count.rowCount > 0) {
         // send records as a response
-        return res.status(201).json({ 'message': 'success' })
+        paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(201, paymodeRes);
   
       } else {
-        return res.status(402).json({ 'message': 'failed' })
+        paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(402, paymodeRes);
       }
   
     } catch (error) {
-      return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
+      paymodeRes = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(500, paymodeRes);
     }
   }
   
   
   //UPDATE PAYMENT MODE
   async function updatePaymentMode(req, res, error) {
-  
-    const id = req.params.id;
+    var resp = new Response.Response(res);
+    const id = req.query.id;
     const pool = await db.dbConnection();
   
     const values = [
@@ -117,18 +129,21 @@ async function getPaymentModes(req, res, error) {
   
     try {
   
-      const row_count = await pool.query(updateonequery)
+      const recordset = await pool.query(updateonequery)
   
-      if (row_count.rowCount > 0) {
+      if (recordset.rowCount > 0) {
         // send records as a response
-        return res.status(201).json({ 'message': 'success' })
+        paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(201, paymodeRes);
   
       } else {
-        return res.status(402).json({ 'message': 'failed' })
+        paymodeRes = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+        resp.json(402, paymodeRes);
       }
   
     } catch (error) {
-      return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
+      paymodeRes = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(500, paymodeRes);
   
     }
   

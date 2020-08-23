@@ -7,12 +7,18 @@ var dbConfig = require('../../../config');
 const Response = require('../util/response');
 const respBody = require('../util/response');
 
+
+const userid = `${dbConfig.app_user}`;
+const userMachineName = `${dbConfig.userMachine}`;
+const userMachineIP = `${dbConfig.userIP}`;
 var taxResp={};
 
 //TAXES
 
 //GET TAX
 async function getTax(req, res, error) {
+  var resp = new Response.Response(res);
+
     const queryString = 'SELECT * FROM public.taxes'
     const pool = await db.dbConnection()
   
@@ -22,23 +28,28 @@ async function getTax(req, res, error) {
   
         if (recordset.rowCount > 0) {
           // send records as a response
-          return res.status(200).json(recordset.rows)
+           taxResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+           resp.json(201, taxResp);
   
-        } else {
-          return res.status(404).json({ 'message': 'No Records Found' })
+        } else { 
+          taxResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) found');
+          resp.json(404, taxResp);
         }
   
       });
   
     } catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      taxResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, taxResp);
     }
   }
   
   
   //GET TAX BY ID
   async function getTaxByID(req, res, error) {
-    const id = req.params.id;
+
+    var resp = new Response.Response(res);
+    const id = req.query.id;
     const queryString = `SELECT * FROM public.taxes WHERE taxid ='${id}'`
     const pool = await db.dbConnection()
   
@@ -48,16 +59,19 @@ async function getTax(req, res, error) {
   
       if (row_count.rowCount > 0) {
   
-        return res.status(200).json(recordset.rows)
+        taxResp = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) found');
+           resp.json(201, taxResp);
   
       } else {
-        return res.status(404).json({ 'message': 'Rcord Not Found' })
-      }
+        taxResp = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) found');
+          taxResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      };
   
     }
   
     catch (error) {
-      return res.status(400).json('record not found with error: ' + helper.parseError(error, queryString))
+      taxResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, taxResp);
     }
   
   }
@@ -65,7 +79,7 @@ async function getTax(req, res, error) {
   
   ///ADD TAX
   async function createTax(req, res, error) {
-  
+    var resp = new Response.Response(res);
     const values = [
       req.body.taxdescription,
       req.body.percentage,
@@ -89,28 +103,30 @@ async function getTax(req, res, error) {
   
         if (recordset.rowCount > 0) {
   
-          return res.status(201).json({ 'message': 'success' })
-  
+          taxResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) added');
+          resp.json(201, taxResp);
         } else {
-          return res.status(402).json({ 'message': 'failed' })
+          taxResp = respBody.ResponseBody('success', recordset.rows, recordset.rowCount + ' record(s) added');
+          resp.json(404, taxResp);
         }
   
       });
   
     } catch (error) {
-      return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
+      taxResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
+      resp.json(404, taxResp);
     }
   }
   
   //Update Tax
   
   async function updateTax(req, res, error) {
-  
-    const id = req.params.id;
+    var resp = new Response.Response(res);
+    const id = req.query.id;
     const pool = await db.dbConnection();
   
     const values = [
-      req.body.description,
+      req.body.taxdescription,
       req.body.percentage,
       moment(new Date()),
       req.body.userid,
@@ -119,7 +135,7 @@ async function getTax(req, res, error) {
       userMachineIP
     ];
   
-    const updateonequery = `UPDATE public.taxes SET description='${req.body.description}', percentage='${req.body.percentage}', 
+    const updateonequery = `UPDATE public.taxes SET description='${req.body.taxdescription}', percentage='${req.body.percentage}', 
       modified_date='${moment(new Date())}', modifier_userid='${req.body.userid}', isactive='${req.body.isactive}',
       usermachinename='${userMachineName}', usermachineip='${userMachineIP}'  WHERE taxid = '${id}' returning *`;
   
@@ -130,13 +146,15 @@ async function getTax(req, res, error) {
   
       if (row_count.rowCount > 0) {
         // send records as a response
-        return res.status(201).json({ 'message': 'success' })
+        taxResp = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record updated');
+           resp.json(201, taxResp);
       } else {
         return res.status(402).json({ 'message': 'failed' })
       }
   
     } catch (error) {
-      return res.status(400).json('record update failed with error: ' + helper.parseError(error, updateonequery))
+      taxResp = respBody.ResponseBody('success', row_count.rows, row_count.rowCount + ' record(s) updated');
+          taxResp = respBody.ResponseBody('failed', '', 'failed with error: ' + helper.parseError(error));
     }
   
   }

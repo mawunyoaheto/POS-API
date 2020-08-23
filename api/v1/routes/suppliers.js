@@ -23,12 +23,12 @@ router.get('/all-suppliers',suppliersController.getSuppliers);
 /**
  * @swagger
  * path:
- *   /suppliers/get-supplier/{id}:
+ *   /suppliers/get-supplier:
  *     get:
  *       summary: Returns a Supplier by id
  *       tags: [Suppliers]
  *       parameters:
- *         - in: path
+ *         - in: query
  *           name: id
  *           required: true
  *           description: id of item base unit to return
@@ -48,7 +48,7 @@ router.get('/all-suppliers',suppliersController.getSuppliers);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-supplier/:id',suppliersController.getSupplierByID);
+router.get('/get-supplier',suppliersController.getSupplierByID);
 
 /**
  * @swagger
@@ -87,7 +87,7 @@ router.post('/add-supplier',suppliersController.createSupplier);
 /**
  * @swagger
  * path:
- *   /suppliers/update-supplier/{id}:
+ *   /suppliers/update-supplier:
  *     put:
  *       summary: Updates a Supplier by id
  *       tags: [Suppliers]
@@ -121,6 +121,6 @@ router.post('/add-supplier',suppliersController.createSupplier);
  *         '200':
  *           description: updated
  */
-router.put('/update-supplier/:id',suppliersController.updateSupplier);
+router.put('/update-supplier',suppliersController.updateSupplier);
 
 module.exports=router;

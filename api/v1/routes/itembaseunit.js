@@ -26,7 +26,7 @@ router.get('/all-baseunits',operationsController.getItemBaseUnits);
 /**
  * @swagger
  * path:
- *   /items/get-baseunit/{id}:
+ *   /items/get-baseunit:
  *     get:
  *       summary: Returns an Item Base Unit by id
  *       tags: [ItemBaseUnit]
@@ -51,7 +51,7 @@ router.get('/all-baseunits',operationsController.getItemBaseUnits);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-baseunit/:id',operationsController.getItemBaseUnitByID);
+router.get('/get-baseunit',operationsController.getItemBaseUnitByID);
 
 
 /**
@@ -81,7 +81,7 @@ router.post('/add-baseunit',operationsController.createItemBaseUnit);
 /**
  * @swagger
  * path:
- *   /items/update-baseunit/{id}:
+ *   /items/update-baseunit:
  *     put:
  *       summary: Updates an Item Base Unit by id
  *       tags: [ItemBaseUnit]
@@ -107,7 +107,7 @@ router.post('/add-baseunit',operationsController.createItemBaseUnit);
  *         '200':
  *           description: updated
  */
-router.put('/update-baseunit/:id',operationsController.updateItemBaseUnit);
+router.put('/update-baseunit',operationsController.updateItemBaseUnit);
 
 
 module.exports=router;
