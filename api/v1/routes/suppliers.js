@@ -11,15 +11,15 @@ const { authenticate } = require('passport');
 /**
  * @swagger
  * /suppliers/all-suppliers:
- *  get:
- *    security:
- *      - bearerAuth: []
- *    summary: Returns all suppliers
- *    tags: [Suppliers]
- *    description: Get all Suppliers
- *    responses:
- *      '200':
- *        description: OK
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     summary: Returns all suppliers
+ *     tags: [Suppliers]
+ *     description: Get all Suppliers
+ *     responses:
+ *       '200':
+ *         description: OK
  */
 router.get('/all-suppliers',authToken.authenticateToken,suppliersController.getSuppliers);
 

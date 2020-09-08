@@ -182,8 +182,7 @@ router.put('/updateuser/:id', usersController.updateUser);
 
 /**
  * @swagger
- *
- * /login:
+ * /users/login:
  *   post:
  *     summary: Generate token
  *     tags: [Users]

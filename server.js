@@ -14,8 +14,8 @@ const swaggerUi = require('swagger-ui-express');
 const passport = require('passport');
 const initializePassport = require('./api/v1/util/passportconfig')
 const config = require('./config');
-const winston = require('./api/v1/util/winston')
-const routes = require("./api/v1/routes/users");
+const winston = require('./api/v1/util/winston');
+const user_routes = require("./api/v1/routes/users");
 //const userCatRoutes = require("./api/v1/routes/user_categories");
 const product_routes = require("./api/v1/routes/products");
 const operations_routes = require("./api/v1/routes/operations");
@@ -128,7 +128,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors());
 app.use(compression());
 
-app.use('/api/v1/users',routes);
+app.use('/api/v1/users',user_routes);
 //app.use('/api/v1/userscat',us);
 app.use('/api/v1/products',product_routes);
 app.use('/api/v1/operations',operations_routes);
