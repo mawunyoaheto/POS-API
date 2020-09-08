@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const operationsController = require('../controllers/modules_trans_stages');
 const genToken = require('../util/generateToken');
@@ -12,6 +12,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /moduletranstages/all-modules:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all Modules
  *    tags: [Modules]
  *    description: Get all Modules
@@ -23,7 +25,7 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/all-modules',operationsController.getModules);
+router.get('/all-modules',authToken.authenticateToken,operationsController.getModules);
 
 
 /**
@@ -31,6 +33,8 @@ router.get('/all-modules',operationsController.getModules);
  * path:
  *   /moduletranstages/get-module:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a Module by id
  *       tags: [Modules]
  *       parameters:
@@ -54,13 +58,15 @@ router.get('/all-modules',operationsController.getModules);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-module',operationsController.getModuleByID);
+router.get('/get-module',authToken.authenticateToken,operationsController.getModuleByID);
 
 /**
  * @swagger
  * path:
  *   /moduletranstages/moduletrans:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a Module Transactions by Module id
  *       tags: [Module Transactions]
  *       parameters:
@@ -84,13 +90,15 @@ router.get('/get-module',operationsController.getModuleByID);
  *         default:
  *           description: Unexpected error
  */
-router.get('/moduletrans',operationsController.getModuleTransactionsByModuleID); 
+router.get('/moduletrans',authToken.authenticateToken,operationsController.getModuleTransactionsByModuleID); 
 
 /**
  * @swagger
  * path:
  *   /moduletranstages/get-transtages:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns Transaction Stages Module Transaction id
  *       tags: [Transaction Stages]
  *       parameters:
@@ -114,6 +122,6 @@ router.get('/moduletrans',operationsController.getModuleTransactionsByModuleID);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-transtages',operationsController.getTransactionStagesByModuleTransID);
+router.get('/get-transtages',authToken.authenticateToken,operationsController.getTransactionStagesByModuleTransID);
 
 module.exports=router;

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const operationsController = require('../controllers/payment_modes');
 const genToken = require('../util/generateToken');
@@ -13,6 +13,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /payments/all-paymentmodes:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all Payment modes
  *    tags: [Payment Modes]
  *    description: Get all Payment Modes
@@ -24,7 +26,7 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/all-paymentmodes',operationsController.getPaymentModes);
+router.get('/all-paymentmodes',authToken.authenticateToken,operationsController.getPaymentModes);
 
 
 /**
@@ -32,6 +34,8 @@ router.get('/all-paymentmodes',operationsController.getPaymentModes);
  * path:
  *   /payments/get-paymentmode:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a Payment Mode by id
  *       tags: [Payment Modes]
  *       parameters:
@@ -55,13 +59,15 @@ router.get('/all-paymentmodes',operationsController.getPaymentModes);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-paymentmode',operationsController.getPaymentModeByID);
+router.get('/get-paymentmode',authToken.authenticateToken,operationsController.getPaymentModeByID);
 
 /**
  * @swagger
  *
  * /payments/add-paymentmode:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add New Payment Mode
  *     tags: [Payment Modes]
  *     requestBody:
@@ -85,13 +91,15 @@ router.get('/get-paymentmode',operationsController.getPaymentModeByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-paymentmode',operationsController.createPaymentMode);
+router.post('/add-paymentmode',authToken.authenticateToken,operationsController.createPaymentMode);
 
 /**
  * @swagger
  *
  * /payments/update-paymentmode:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Update Payment Mode
  *     tags: [Payment Modes]
  *     parameters:
@@ -122,6 +130,6 @@ router.post('/add-paymentmode',operationsController.createPaymentMode);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-paymentmode',operationsController.updatePaymentMode);
+router.put('/update-paymentmode',authToken.authenticateToken,operationsController.updatePaymentMode);
 
 module.exports=router;

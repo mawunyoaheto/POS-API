@@ -137,8 +137,7 @@ async function confirmRecord(queryString, queryValues, res, next) {
 
     // create Request object
     const pool = await db.dbConnection()
-    //console.log(queryString)
-    //console.log(queryValues)
+  
     try {
 
       const recordset = await pool.query(`${queryString}`, [`${queryValues}`])
@@ -173,15 +172,6 @@ async function getHosnameIP(req) {
     //hostName = os.hostname()
     ipAddress = (req.headers['x-forwarded-for'] || '').split(',')[0]
       || req.connection.remoteAddress;
-
-    // if (!ipAddress) {
-    //   return '';
-    // }
-
-    // // convert from "::ffff:192.0.0.1"  to "192.0.0.1"
-    //   if (ipAddress.substr(0, 7) == "::ffff:") {
-    //     ipAddress = ipAddress.substr(7)
-    //   }
 
     console.log(ipAddress)
     return ipAddress

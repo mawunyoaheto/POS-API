@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const taxController = require('../controllers/tax');
 const genToken = require('../util/generateToken');
+const { authenticate } = require('passport');
 
 
 //Tax routes
@@ -13,6 +14,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /taxes/all-tax:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all Tax
  *    tags: [Tax]
  *    description: Get all Tax
@@ -24,13 +27,15 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/all-tax',taxController.getTax);
+router.get('/all-tax',authToken.authenticateToken,taxController.getTax);
 
 /**
  * @swagger
  * path:
  *   /taxes/get-tax:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns Tax by id
  *       tags: [Tax]
  *       parameters:
@@ -54,13 +59,15 @@ router.get('/all-tax',taxController.getTax);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-tax',taxController.getTaxByID);
+router.get('/get-tax',authToken.authenticateToken,taxController.getTaxByID);
 
 /**
  * @swagger
  *
  * /taxes/add-tax:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add New Tax
  *     tags: [Tax]
  *     requestBody:
@@ -86,13 +93,15 @@ router.get('/get-tax',taxController.getTaxByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-tax',taxController.createTax);
+router.post('/add-tax',authToken.authenticateToken,taxController.createTax);
 
 /**
  * @swagger
  *
  * /taxes/update-tax:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Update Tax
  *     tags: [Tax]
  *     parameters:
@@ -125,6 +134,6 @@ router.post('/add-tax',taxController.createTax);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-tax',taxController.updateTax);
+router.put('/update-tax',authToken.authenticateToken,taxController.updateTax);
 
 module.exports=router;

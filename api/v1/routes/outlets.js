@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const outletsController = require('../controllers/outlets');
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const genToken = require('../util/generateToken');
 
@@ -19,6 +20,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /outlets/all-outlets:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all outlets(branches)
  *    tags: [Outlets]
  *    description: Get all outlets(branches)
@@ -30,13 +33,15 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/all-outlets',outletsController.getOutlets);
+router.get('/all-outlets',authToken.authenticateToken,outletsController.getOutlets);
 
 /**
  * @swagger
  * path:
  *   /outlets/get-outlet:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns an Outlet by id
  *       tags: [Outlets]
  *       parameters:
@@ -60,7 +65,7 @@ router.get('/all-outlets',outletsController.getOutlets);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-outlet',outletsController.getOutletsByID);
+router.get('/get-outlet',authToken.authenticateToken,outletsController.getOutletsByID);
 
 
 /**
@@ -68,6 +73,8 @@ router.get('/get-outlet',outletsController.getOutletsByID);
  *
  * /outlets/add-outlet:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add an Outlet (Branch)
  *     tags: [Outlets]
  *     requestBody:
@@ -103,13 +110,15 @@ router.get('/get-outlet',outletsController.getOutletsByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-outlet',outletsController.createOutlet);
+router.post('/add-outlet',authToken.authenticateToken,outletsController.createOutlet);
 
 /**
  * @swagger
  *
  * /outlets/update-outlet:
  *   put:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Update an Outlet (Branch)
  *     tags: [Outlets]
  *     parameters:
@@ -152,6 +161,6 @@ router.post('/add-outlet',outletsController.createOutlet);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-outlet',outletsController.updateOutlet);
+router.put('/update-outlet',authToken.authenticateToken,outletsController.updateOutlet);
 
 module.exports=router;

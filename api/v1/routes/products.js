@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const productsController = require('../controllers/products');
 const genToken = require('../util/generateToken');
@@ -23,6 +23,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /products/products:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all products
  *    tags: [Products]
  *    description: Get all products
@@ -34,13 +36,15 @@ const genToken = require('../util/generateToken');
  *      '400':
  *        description: Unexpected error
  */
-router.get('/products',productsController.getProducts);
+router.get('/products',authToken.authenticateToken,productsController.getProducts);
 
 /**
  * @swagger
  * path:
  *   /products/get-product:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a product by id
  *       tags: [Products]
  *       parameters:
@@ -64,13 +68,15 @@ router.get('/products',productsController.getProducts);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-product',productsController.getProductByID);
+router.get('/get-product',authToken.authenticateToken,productsController.getProductByID);
 
 /**
  * @swagger
  *
  * /products/add-product:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add a new product
  *     tags: [Products]
  *     requestBody:
@@ -102,13 +108,15 @@ router.get('/get-product',productsController.getProductByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-product',productsController.createPoduct);
+router.post('/add-product',authToken.authenticateToken,productsController.createPoduct);
 
 /**
  * @swagger
  * path:
  *   /products/update-product:
  *     put:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Updates a product by id
  *       tags: [Products]
  *       parameters:
@@ -147,7 +155,7 @@ router.post('/add-product',productsController.createPoduct);
  *       '400':
  *         description: Unexpected error
  */
-router.put('/update-product',productsController.updateProduct);
+router.put('/update-product',authToken.authenticateToken,productsController.updateProduct);
 
 
 //product Catgeories routes
@@ -155,6 +163,8 @@ router.put('/update-product',productsController.updateProduct);
  * @swagger
  * /products/get-category:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all Product Categories
  *    tags: [Product Category]
  *    description: Get all Product Categories
@@ -166,13 +176,15 @@ router.put('/update-product',productsController.updateProduct);
  *      '400':
  *        description: Unexpected error
  */
-router.get('/get-category',productsController.getProductCategories);
+router.get('/get-category',authToken.authenticateToken,productsController.getProductCategories);
 
 /**
  * @swagger
  * path:
  *   /products/get-category:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a product category by id
  *       tags: [Product Category]
  *       parameters:
@@ -196,13 +208,15 @@ router.get('/get-category',productsController.getProductCategories);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-category',productsController.getProductCategoryID);
+router.get('/get-category',authToken.authenticateToken,productsController.getProductCategoryID);
 
 /**
  * @swagger
  *
  * /products/add-category:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add a product category
  *     tags: [Product Category]
  *     requestBody:
@@ -224,13 +238,15 @@ router.get('/get-category',productsController.getProductCategoryID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-category',productsController.createPoductCategory);
+router.post('/add-category',authToken.authenticateToken,productsController.createPoductCategory);
 
 /**
  * @swagger
  * path:
  *   /products/update-category:
  *     put:
+ *  *    security:
+ *         - bearerAuth: []
  *       summary: Updates a product category by id
  *       tags: [Product Category]
  *       parameters:
@@ -261,7 +277,7 @@ router.post('/add-category',productsController.createPoductCategory);
  *         default:
  *           description: Unexpected error
  */
-router.put('/update-category',productsController.updateProductCategory);
+router.put('/update-category',authToken.authenticateToken,productsController.updateProductCategory);
 
 
 

@@ -1,16 +1,19 @@
 
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const suppliersController = require('../controllers/suppliers');
 const genToken = require('../util/generateToken');
+const { authenticate } = require('passport');
 //Supplier routes
 
 /**
  * @swagger
  * /suppliers/all-suppliers:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all suppliers
  *    tags: [Suppliers]
  *    description: Get all Suppliers
@@ -18,13 +21,15 @@ const genToken = require('../util/generateToken');
  *      '200':
  *        description: OK
  */
-router.get('/all-suppliers',suppliersController.getSuppliers);
+router.get('/all-suppliers',authToken.authenticateToken,suppliersController.getSuppliers);
 
 /**
  * @swagger
  * path:
  *   /suppliers/get-supplier:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns a Supplier by id
  *       tags: [Suppliers]
  *       parameters:
@@ -48,13 +53,15 @@ router.get('/all-suppliers',suppliersController.getSuppliers);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-supplier',suppliersController.getSupplierByID);
+router.get('/get-supplier',authToken.authenticateToken,suppliersController.getSupplierByID);
 
 /**
  * @swagger
  *
  * /suppliers/add-supplier:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Add a Supplier
  *     tags: [Suppliers]
  *     requestBody:
@@ -82,13 +89,15 @@ router.get('/get-supplier',suppliersController.getSupplierByID);
  *       '400':
  *         description: Unexpected error
  */
-router.post('/add-supplier',suppliersController.createSupplier);
+router.post('/add-supplier',authToken.authenticateToken,suppliersController.createSupplier);
 
 /**
  * @swagger
  * path:
  *   /suppliers/update-supplier:
  *     put:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Updates a Supplier by id
  *       tags: [Suppliers]
  *       parameters:
@@ -121,6 +130,6 @@ router.post('/add-supplier',suppliersController.createSupplier);
  *         '200':
  *           description: updated
  */
-router.put('/update-supplier',suppliersController.updateSupplier);
+router.put('/update-supplier',authToken.authenticateToken,suppliersController.updateSupplier);
 
 module.exports=router;

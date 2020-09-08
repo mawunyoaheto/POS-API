@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-//const authToken = require('../middleware/auth')
+const authToken = require('../middleware/auth')
 const detailsController = require('../controllers/details');
 const operationsController = require('../controllers/itembaseunit');
 const genToken = require('../util/generateToken');
@@ -12,6 +12,8 @@ const genToken = require('../util/generateToken');
  * @swagger
  * /items/all-baseunits:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    summary: Returns all Item Base Units
  *    tags: [ItemBaseUnit]
  *    description: Get all Item Base Units
@@ -19,7 +21,7 @@ const genToken = require('../util/generateToken');
  *      '200':
  *        description: OK
  */
-router.get('/all-baseunits',operationsController.getItemBaseUnits);
+router.get('/all-baseunits',authToken.authenticateToken,operationsController.getItemBaseUnits);
 
 
 
@@ -28,6 +30,8 @@ router.get('/all-baseunits',operationsController.getItemBaseUnits);
  * path:
  *   /items/get-baseunit:
  *     get:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Returns an Item Base Unit by id
  *       tags: [ItemBaseUnit]
  *       parameters:
@@ -51,7 +55,7 @@ router.get('/all-baseunits',operationsController.getItemBaseUnits);
  *         default:
  *           description: Unexpected error
  */
-router.get('/get-baseunit',operationsController.getItemBaseUnitByID);
+router.get('/get-baseunit',authToken.authenticateToken,operationsController.getItemBaseUnitByID);
 
 
 /**
@@ -59,6 +63,8 @@ router.get('/get-baseunit',operationsController.getItemBaseUnitByID);
  *
  * /items/add-baseunit:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create Item Base Unit
  *     tags: [ItemBaseUnit]
  *     requestBody:
@@ -76,13 +82,15 @@ router.get('/get-baseunit',operationsController.getItemBaseUnitByID);
  *       '200':
  *         description: created
  */
-router.post('/add-baseunit',operationsController.createItemBaseUnit);
+router.post('/add-baseunit',authToken.authenticateToken,operationsController.createItemBaseUnit);
 
 /**
  * @swagger
  * path:
  *   /items/update-baseunit:
  *     put:
+ *       security:
+ *         - bearerAuth: []
  *       summary: Updates an Item Base Unit by id
  *       tags: [ItemBaseUnit]
  *       parameters:
@@ -107,7 +115,7 @@ router.post('/add-baseunit',operationsController.createItemBaseUnit);
  *         '200':
  *           description: updated
  */
-router.put('/update-baseunit',operationsController.updateItemBaseUnit);
+router.put('/update-baseunit',authToken.authenticateToken,operationsController.updateItemBaseUnit);
 
 
 module.exports=router;

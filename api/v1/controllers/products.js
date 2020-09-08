@@ -111,13 +111,12 @@ async function createPoductCategory(req, res, error) {
       resp.json(201, productsRes);
 
     } else {
-      //return res.status(402).json({ 'message': 'failed' })
+  
       productsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
       resp.json(404, productsRes);
     }
 
   } catch (error) {
-    //return res.status(400).json('record insert failed with error: ' + helper.parseError(error, createQuery))
     productsRes= respBody.ResponseBody('failed','','failed with error: ' + helper.parseError(error,createQuery));
     resp.json(404, productsRes);
   }
@@ -156,7 +155,6 @@ async function updateProductCategory(req, res, error) {
       productsRes= respBody.ResponseBody('success',row_count.rows,row_count.rowCount + ' record(s) found');
       resp.json(201, productsRes);
     } else {
-     // res.status(402).json({ 'message': 'failed' });
      productsRes= respBody.ResponseBody('failed',row_count.rows,row_count.rowCount + ' record(s) found');
      resp.json(404, productsRes);
     }
@@ -164,7 +162,6 @@ async function updateProductCategory(req, res, error) {
 
   } catch (error) {
 
-    //return res.status(400).json('record not found with error: ' + helper.parseError(error, updateonequery))
     productsRes= respBody.ResponseBody('success','','failed with error: ' + helper.parseError(error,updateonequery));
     resp.json(404, productsRes);
   }
