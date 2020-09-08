@@ -21,20 +21,20 @@ const genToken = require('../util/generateToken');
 
 /**
  * @swagger
- * /products/products:
- *  get:
- *    security:
- *      - bearerAuth: []
- *    summary: Returns all products
- *    tags: [Products]
- *    description: Get all products
- *    responses:
- *      '200':
- *        description: OK
- *      '404':
- *        description: No records found
- *      '400':
- *        description: Unexpected error
+ * path:
+ *   /products/products:
+ *     get:
+ *       security:
+ *         - bearerAuth: []
+ *       summary: Returns all products
+ *       tags: [Products]
+ *       responses:
+ *         '200':
+ *           description: OK
+ *         '404':
+ *           description: No records found
+ *         '400':
+ *           description: Unexpected error
  */
 router.get('/products',authToken.authenticateToken,productsController.getProducts);
 
@@ -72,7 +72,6 @@ router.get('/get-product',authToken.authenticateToken,productsController.getProd
 
 /**
  * @swagger
- *
  * /products/add-product:
  *   post:
  *     security:
@@ -134,26 +133,26 @@ router.post('/add-product',authToken.authenticateToken,productsController.create
  *               type: object
  *               properties:
  *                 description:
- *                 type: string
- *               ext_description:
- *                 type: string
- *               product_code:
- *                 type: string
- *               cost_price:
- *                 type: double
- *               s_price:
- *                 type: double
- *               category_id:
- *                 type: integer
- *               isactive:
- *                 type: boolean
- *               userid:
- *                 type: integer
- *     responses:
- *       '201':
- *         description: created
- *       '400':
- *         description: Unexpected error
+ *                   type: string
+ *                 ext_description:
+ *                   type: string
+ *                 product_code:
+ *                   type: string
+ *                 cost_price:
+ *                   type: double
+ *                 s_price:
+ *                   type: double
+ *                 category_id:
+ *                   type: integer
+ *                 isactive:
+ *                   type: boolean
+ *                 userid:
+ *                   type: integer
+ *       responses:
+ *         '201':
+ *           description: created
+ *         '400':
+ *           description: Unexpected error
  */
 router.put('/update-product',authToken.authenticateToken,productsController.updateProduct);
 
@@ -245,7 +244,7 @@ router.post('/add-category',authToken.authenticateToken,productsController.creat
  * path:
  *   /products/update-category:
  *     put:
- *  *    security:
+ *       security:
  *         - bearerAuth: []
  *       summary: Updates a product category by id
  *       tags: [Product Category]

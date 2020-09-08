@@ -179,14 +179,39 @@ router.put('/updateuser/:id', usersController.updateUser);
 
 
 // User Login
-router.get('/login', usersController.login)
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/users/dashboard',
-    failureRedirect: '/users/login',
-    failureFlash: true
-})
-);
+/**
+ * @swagger
+ *
+ * /login:
+ *   post:
+ *     summary: Generate token
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: Sucess
+ *       '400':
+ *         description: Unexpected error
+ */
+router.post('/login',genToken.generateToken);
+
+//router.get('/login', usersController.login)
+
+// router.post('/login', passport.authenticate('local', {
+//     successRedirect: '/users/dashboard',
+//     failureRedirect: '/users/login',
+//     failureFlash: true
+// })
+// );
 
 // router.post('/users/login', passport.authenticate('local', {
 //     successRedirect: '/users/dashboard',
