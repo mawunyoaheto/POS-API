@@ -41,11 +41,11 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "KaziHub Point of Sale API",
+      title: "Point of Sale API",
       version: "1.0.0",
       description: "An API for KaziHub Point of Sale App ",
       contact: {
-        name: "KAZIHUB"
+        name: "TELLESOFT"
       }
       //servers:["http://localhost:5001/api/v2"]
     },
